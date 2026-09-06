@@ -1,0 +1,94 @@
+<!doctype html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Real-closures prototype</title>
+<style>
+  body { font-family: system-ui; padding: 24px; max-width: 600px; margin: auto; }
+  button { cursor: pointer; padding: 4px 10px; }
+</style>
+<!--META-->
+</head>
+
+<body>
+<!--APP-->
+
+<script>
+// Generic runtime — zero knowledge of Cart or AddButton specifically.
+// window.__META__ = { ComponentName: { state, props, actions } }, the
+// same static object each class exports as `meta`, JSON-safe as-is
+// because it never contained a function to begin with.
+
+const META = window.__META__
+const STATE = {}
+document.querySelectorAll('[data-ref]').forEach(el => {
+  STATE[el.dataset.ref] = JSON.parse(el.dataset.state)
+})
+
+function gatherReads(componentName, ref, actionName) {
+  let reads = {}
+  let actionMeta = META[componentName].actions[actionName]
+  for (let key of actionMeta.reads || []) reads[key] = STATE[ref][key]
+  return reads
+}
+
+// Blanket rule: attach every declared function-prop's target + reads on
+// every action call from this instance. No per-action tracing of which
+// prop a given method might call — that's the complexity this pattern
+// specifically avoids. The cost is a few extra small values on requests
+// that don't end up using them; there is no cost in code to maintain.
+function gatherProps(componentName, refEl) {
+  let meta = META[componentName]
+  let declared = JSON.parse(refEl.dataset.props || '{}')
+  let out = {}
+  for (let propName of Object.keys(meta.props || {})) {
+    let p = declared[propName]
+    if (!p) continue
+    out[propName] = {
+      component: p.component,
+      ref: p.ref,
+      action: p.action,
+      reads: gatherReads(p.component, p.ref, p.action)
+    }
+  }
+  return out
+}
+
+function applyWrites(writes) {
+  for (let [ref, fields] of Object.entries(writes || {})) {
+    let el = document.querySelector(`[data-ref="${ref}"]`)
+    if (!el) continue
+    Object.assign(STATE[ref], fields)
+    for (let [key, value] of Object.entries(fields)) {
+      let bound = el.querySelector(`[data-bind="${key}"]`)
+      if (bound) bound.textContent = value
+    }
+  }
+}
+
+document.addEventListener('click', async (event) => {
+  let button = event.target.closest('[data-action]')
+  if (!button) return
+
+  let refEl = button.closest('[data-ref]')
+  let component = refEl.dataset.component
+  let action = button.dataset.action
+  let ref = refEl.dataset.ref
+
+  let reads = gatherReads(component, ref, action)
+  let props = gatherProps(component, refEl)
+  let params = JSON.parse(button.dataset.params || '[]')
+
+  let res = await fetch('/action', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ component, ref, action, reads, props, params })
+  })
+  let result = await res.json()
+  if (result.error) return console.error('server error:', result.error)
+
+  applyWrites(result.writes)
+})
+</script>
+</body>
+</html>
