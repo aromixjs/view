@@ -1,0 +1,91 @@
+<!doctype html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>trigger() prototype — deep tree + cross-tree singletons</title>
+<style>
+  body { font-family: system-ui; padding: 24px; max-width: 700px; margin: auto; }
+  button { cursor: pointer; padding: 2px 8px; }
+  .grid { display: flex; gap: 16px; flex-wrap: wrap; }
+  .card { border: 1px solid #ddd; border-radius: 6px; padding: 10px; width: 180px; }
+  header { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #ddd; margin-bottom: 12px; }
+  .toast { margin-top: 16px; padding: 8px; background: #222; color: #fff; border-radius: 6px; min-height: 1em; }
+</style>
+<!--META-->
+</head>
+
+<body>
+<!--APP-->
+
+<script>
+const META = window.__META__
+const STATE = {}
+document.querySelectorAll('[data-ref]').forEach(el => {
+  STATE[el.dataset.ref] = JSON.parse(el.dataset.state)
+})
+
+function gatherReads(componentName, ref, actionName) {
+  let reads = {}
+  let actionMeta = META[componentName].actions[actionName]
+  for (let key of actionMeta.reads || []) reads[key] = STATE[ref][key]
+  return reads
+}
+
+// Same shape as a resolved callback prop — {ref, action, reads} — the
+// only difference is HOW the ref was found: a singleton DOM lookup by
+// component type, done once per trigger name, instead of something
+// baked into data-props at render time.
+function gatherTriggers(componentName, actionName) {
+  let actionMeta = META[componentName].actions[actionName]
+  let out = {}
+  for (let key of actionMeta.triggers || []) {
+    let [targetComponent, targetAction] = key.split('.')
+    let el = document.querySelector(`[data-component="${targetComponent}"]`)
+    if (!el) continue
+    out[key] = {
+      ref: el.dataset.ref,
+      action: targetAction,
+      reads: gatherReads(targetComponent, el.dataset.ref, targetAction)
+    }
+  }
+  return out
+}
+
+function applyWrites(writes) {
+  for (let [ref, fields] of Object.entries(writes || {})) {
+    let el = document.querySelector(`[data-ref="${ref}"]`)
+    if (!el) continue
+    Object.assign(STATE[ref], fields)
+    for (let [key, value] of Object.entries(fields)) {
+      let bound = el.querySelector(`[data-bind="${key}"]`)
+      if (bound) bound.textContent = value
+    }
+  }
+}
+
+document.addEventListener('click', async (event) => {
+  let button = event.target.closest('[data-action]')
+  if (!button) return
+
+  let refEl = button.closest('[data-ref]')
+  let component = refEl.dataset.component
+  let action = button.dataset.action
+  let ref = refEl.dataset.ref
+
+  let reads = gatherReads(component, ref, action)
+  let triggers = gatherTriggers(component, action)
+  let params = JSON.parse(button.dataset.params || '[]')
+
+  let res = await fetch('/action', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ component, ref, action, reads, triggers, params })
+  })
+  let result = await res.json()
+  if (result.error) return console.error('server error:', result.error)
+
+  applyWrites(result.writes)
+})
+</script>
+</body>
+</html>
