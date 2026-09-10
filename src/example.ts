@@ -1,6 +1,8 @@
 import { Hono } from "hono";
 import { serve } from "@hono/node-server";
 import { AVIRToHtml } from "./render";
+import { readFile, readFileSync } from "fs";
+import { join } from "path";
 export function Toast() {
    let message = 'Test';
 
@@ -33,10 +35,10 @@ export function Toast() {
             // onclick: show,
             'data-click': 'show'
          },
-         children:[
+         children: [
             {
-               type:'text',
-               value:'Click ME'
+               type: 'text',
+               value: 'Click ME'
             }
          ]
       })
@@ -112,7 +114,14 @@ app.get('/', (c) => {
    const output: any = wrap(Toast)
 
    const html = AVIRToHtml(output)
-   return c.html(html, 200)
+   const filePath = join(import.meta.dirname, './root.html')
+
+   const rootHtml = readFileSync(filePath, {
+      encoding: 'utf-8',
+   })
+
+   const finalHtml = rootHtml.replace('<!--root-->', html)
+   return c.html(finalHtml, 200)
 })
 
 serve({
