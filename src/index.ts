@@ -9,11 +9,11 @@ import { AVIRRenderer } from "./render";
 const app = new Hono();
 
 app.get("/", (c) => {
-   const tagMeta = Toast();
+   const tag = Toast();
 
    const renderer = new AVIRRenderer({
-      uuid: tagMeta.uuid,
-      htmlIR: tagMeta.html(),
+      uuid: tag.uuid,
+      htmlIR: tag.html(),
    });
 
 
@@ -28,7 +28,7 @@ app.get("/", (c) => {
    const finalHtml = rootHtml.replace("<!--root-->", html).replace(
       "<!--meta-->",
       toInjectableScript({
-         user: "123",
+         [tag.uuid]: tag.meta
       }),
    );
 

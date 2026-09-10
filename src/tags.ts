@@ -14,7 +14,6 @@ export function Toast() {
       type: "tag",
       name: "div",
       attributes: {
-        class: "toast",
         "data-bind": "message",
       },
       children: [
