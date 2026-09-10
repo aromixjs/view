@@ -12,50 +12,50 @@
 
 export class AddButton {
   constructor({ productId, inStock, onAdd }) {
-    this.productId = productId
-    this.inStock = inStock
-    this.onAdd = onAdd
+    this.productId = productId;
+    this.inStock = inStock;
+    this.onAdd = onAdd;
   }
 
   add() {
     if (this.inStock) {
-      this.onAdd(this.productId)
+      this.onAdd(this.productId);
     }
   }
 
   render() {
-    return `<button data-action="add">Add to cart (#${this.productId})</button>`
+    return `<button data-action="add">Add to cart (#${this.productId})</button>`;
   }
 
   static meta = {
-    state: ['productId', 'inStock'],
-    props: { onAdd: 'fn' },
+    state: ["productId", "inStock"],
+    props: { onAdd: "fn" },
     actions: {
-      add: { reads: ['productId', 'inStock'], params: [] }
-    }
-  }
+      add: { reads: ["productId", "inStock"], params: [] },
+    },
+  };
 }
 
 export class Cart {
   constructor({ itemCount = 0 } = {}) {
-    this.itemCount = itemCount
+    this.itemCount = itemCount;
   }
 
   addItem(id) {
-    this.itemCount++
+    this.itemCount++;
   }
 
   render(childrenHtml) {
-    return `<div>In cart: <span data-bind="itemCount">${this.itemCount}</span></div>${childrenHtml}`
+    return `<div>In cart: <span data-bind="itemCount">${this.itemCount}</span></div>${childrenHtml}`;
   }
 
   static meta = {
-    state: ['itemCount'],
+    state: ["itemCount"],
     props: {},
     actions: {
-      addItem: { reads: ['itemCount'], params: ['id'] }
-    }
-  }
+      addItem: { reads: ["itemCount"], params: ["id"] },
+    },
+  };
 }
 
-export const registry = { AddButton, Cart }
+export const registry = { AddButton, Cart };

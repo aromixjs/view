@@ -20,12 +20,18 @@ importers:
       '@hono/node-server':
         specifier: ^2.1.1
         version: 2.1.1(hono@4.13.5)
+      '@types/serialize-javascript':
+        specifier: ^5.0.4
+        version: 5.0.4
       h3:
         specifier: 2.0.1-rc.30
         version: 2.0.1-rc.30
       hono:
         specifier: ^4.13.5
         version: 4.13.5
+      serialize-javascript:
+        specifier: ^7.1.1
+        version: 7.1.1
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
@@ -793,6 +799,9 @@ packages:
     resolution: {integrity: sha512-EULJ8LApcVEPbrfND0cRQqutIOdiIgJ1Mgrhpy755r14xMohPTEpkV/k28SJvuOs9bHRFW8x+KeDAEPiGQPB9Q==}
     deprecated: This is a stub types definition. parse-path provides its own type definitions, so you do not need this installed.
 
+  '@types/serialize-javascript@5.0.4':
+    resolution: {integrity: sha512-Z2R7UKFuNWCP8eoa2o9e5rkD3hmWxx/1L0CYz0k2BZzGh0PhEVMp9kfGiqEml/0IglwNERXZ2hwNzIrSz/KHTA==}
+
   '@vercel/detect-agent@1.2.4':
     resolution: {integrity: sha512-euARTdvCVoi2k7/mqRUGyareO98jiVjwUyfJ8VFpN53aUv3R6ZgwSpU3ErOwFQKT6Fq8dOplEsy+DSmEoJPQdQ==}
     engines: {node: '>=14'}
@@ -1363,6 +1372,10 @@ packages:
     resolution: {integrity: sha512-Y7/KDsb8LjooZpwaqGyulO6DQlksgCncchHGk+sZIY4SBvUocMBEFH5Ur1fI4dV+Jvl0w6cjvucaIi40puRioA==}
     engines: {node: '>=10'}
     hasBin: true
+
+  serialize-javascript@7.1.1:
+    resolution: {integrity: sha512-k3CMsaIvvdSwm8oLB4MXSl0wH2/cwlH7xGcnRd2DaeRmBkbzYmyT8j0tsX60DwD1eRwHTpNpH8ljKu9oUT1MeQ==}
+    engines: {node: '>=20.0.0'}
 
   shebang-command@2.0.0:
     resolution: {integrity: sha512-kHxr2zZpYtdmrN1qDjrrX/Z1rR1kG8Dx+gkpK1G4eXmvXswmcE1hTWBWYUzlraYw1/yZp6YuDY77YtvbN0dmDA==}
@@ -1987,6 +2000,8 @@ snapshots:
     dependencies:
       parse-path: 7.1.0
 
+  '@types/serialize-javascript@5.0.4': {}
+
   '@vercel/detect-agent@1.2.4': {}
 
   '@vitest/expect@4.1.10':
@@ -2579,6 +2594,8 @@ snapshots:
       queue-microtask: 1.2.3
 
   semver@7.8.5: {}
+
+  serialize-javascript@7.1.1: {}
 
   shebang-command@2.0.0:
     dependencies:

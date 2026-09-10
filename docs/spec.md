@@ -53,11 +53,7 @@ namespace Home {
     };
   }
 
-  export function Server(
-    self: SelfType,
-    request: AromixHttpRequest,
-    props: PropType,
-  ) {
+  export function Server(self: SelfType, request: AromixHttpRequest, props: PropType) {
     const { initial } = props;
 
     function logValue() {
@@ -121,6 +117,6 @@ function List(list: List[]) {
     });
   }
 
-  return __$
+  return __$;
 }
 ```

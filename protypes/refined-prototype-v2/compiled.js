@@ -8,32 +8,33 @@
 // tree to run an action — it just looks a name up in here and calls it.
 
 export const components = {
-
   // A component with its own local, scalar state. No children.
   Counter: {
     bindings: {
-      count: { selector: '[data-bind="count"]', prop: 'textContent' }
+      count: { selector: '[data-bind="count"]', prop: "textContent" },
     },
     actions: {
       increment: {
-        reads: ['count'],
+        reads: ["count"],
         run(reads) {
-          let next = Number(reads.count) + 1
-          return { ops: [{ op: 'set', key: 'count', value: String(next) }] }
-        }
+          let next = Number(reads.count) + 1;
+          return { ops: [{ op: "set", key: "count", value: String(next) }] };
+        },
       },
       reset: {
         reads: [],
         run() {
-          return { ops: [{ op: 'set', key: 'count', value: '0' }] }
-        }
-      }
+          return { ops: [{ op: "set", key: "count", value: "0" }] };
+        },
+      },
     },
     render() {
-      return `<span data-bind="count">0</span> ` +
-             `<button data-action="increment">+1</button> ` +
-             `<button data-action="reset">reset</button>`
-    }
+      return (
+        `<span data-bind="count">0</span> ` +
+        `<button data-action="increment">+1</button> ` +
+        `<button data-action="reset">reset</button>`
+      );
+    },
   },
 
   // A component with a list of children. Owns the one action that can
@@ -41,27 +42,29 @@ export const components = {
   // updates alongside the structural change in the same response.
   UserList: {
     bindings: {
-      userCount: { selector: '[data-bind="userCount"]', prop: 'textContent' }
+      userCount: { selector: '[data-bind="userCount"]', prop: "textContent" },
     },
     actions: {
       removeUser: {
-        reads: ['userCount'],
+        reads: ["userCount"],
         run(reads, params) {
-          let id = params[0]
-          let next = Number(reads.userCount) - 1
+          let id = params[0];
+          let next = Number(reads.userCount) - 1;
           return {
             ops: [
-              { op: 'remove', ref: `user-${id}` },
-              { op: 'set', key: 'userCount', value: String(next) }
-            ]
-          }
-        }
-      }
+              { op: "remove", ref: `user-${id}` },
+              { op: "set", key: "userCount", value: String(next) },
+            ],
+          };
+        },
+      },
     },
     render(state) {
-      return `Users (<span data-bind="userCount">${state.users.length}</span>)` +
-        `<div>${state.users.map(u => components.UserCard.render(u)).join('')}</div>`
-    }
+      return (
+        `Users (<span data-bind="userCount">${state.users.length}</span>)` +
+        `<div>${state.users.map((u) => components.UserCard.render(u)).join("")}</div>`
+      );
+    },
   },
 
   // A purely presentational component: no state, no actions of its own.
@@ -76,22 +79,22 @@ export const components = {
                    style="display:flex;justify-content:space-between;align-items:center;padding:8px;border:1px solid #ddd;margin:6px 0;border-radius:6px">
         <span>${u.id} — ${u.name}</span>
         <button data-action="removeUser" data-param="${u.id}">delete</button>
-      </div>`
-    }
-  }
-}
+      </div>`;
+    },
+  },
+};
 
 // What the browser is allowed to see: bindings (to locate DOM) and, per
 // action, only the *names* of what it reads — never the run() logic.
 export function toClientManifest() {
-  let out = {}
+  let out = {};
   for (let [name, comp] of Object.entries(components)) {
     out[name] = {
       bindings: comp.bindings,
       actions: Object.fromEntries(
-        Object.entries(comp.actions).map(([action, def]) => [action, { reads: def.reads }])
-      )
-    }
+        Object.entries(comp.actions).map(([action, def]) => [action, { reads: def.reads }]),
+      ),
+    };
   }
-  return out
+  return out;
 }

@@ -1,13 +1,13 @@
-import { Hono } from 'hono';
-import { serve } from '@hono/node-server';
-import { randomUUID } from 'crypto';
+import { Hono } from "hono";
+import { serve } from "@hono/node-server";
+import { randomUUID } from "crypto";
 
 // ==========================================
 // 1. HELPER: Hyperscript for cleaner views
 // ==========================================
 function h(tag, attrs = {}, ...children) {
-  const flatChildren = children.flat(Infinity).map(c => {
-    if (typeof c === 'string' || typeof c === 'number') return String(c);
+  const flatChildren = children.flat(Infinity).map((c) => {
+    if (typeof c === "string" || typeof c === "number") return String(c);
     return c;
   });
   return { tag, ...attrs, children: flatChildren };
@@ -28,10 +28,10 @@ class IssueCard {
   static __meta = {
     actions: {
       complete: {
-        reads: ['isProcessing', 'issueId', 'title'],
-        calls: { prop: 'onComplete', args: ['issueId', 'title'] }
-      }
-    }
+        reads: ["isProcessing", "issueId", "title"],
+        calls: { prop: "onComplete", args: ["issueId", "title"] },
+      },
+    },
   };
 
   complete() {
@@ -40,12 +40,14 @@ class IssueCard {
   }
 
   render() {
-    return h('div', { 
-      style: 'border:1px solid #333; padding:8px; margin:4px;' 
-    }, 
-      h('h4', {}, this.title),
-      h('p', { bind: 'isProcessing' }, `Status: ${this.isProcessing ? 'Processing...' : 'Open'}`),
-      h('button', { onClick: 'complete', style: 'cursor:pointer' }, 'Complete Issue')
+    return h(
+      "div",
+      {
+        style: "border:1px solid #333; padding:8px; margin:4px;",
+      },
+      h("h4", {}, this.title),
+      h("p", { bind: "isProcessing" }, `Status: ${this.isProcessing ? "Processing..." : "Open"}`),
+      h("button", { onClick: "complete", style: "cursor:pointer" }, "Complete Issue"),
     );
   }
 }
@@ -56,18 +58,18 @@ class KanbanBoard {
     this.onAdminLog = props.onAdminLog; // Calls AdminPanel
     this.completedCount = 0; // Local state
     this.issues = [
-      { id: 101, title: 'Fix RPC Bug' },
-      { id: 102, title: 'Update Docs' }
+      { id: 101, title: "Fix RPC Bug" },
+      { id: 102, title: "Update Docs" },
     ];
   }
 
   static __meta = {
     actions: {
       markCompleted: {
-        reads: ['completedCount', 'boardName'],
-        calls: { prop: 'onAdminLog', args: ['boardName'] }
-      }
-    }
+        reads: ["completedCount", "boardName"],
+        calls: { prop: "onAdminLog", args: ["boardName"] },
+      },
+    },
   };
 
   markCompleted(issueId, issueTitle) {
@@ -77,16 +79,25 @@ class KanbanBoard {
   }
 
   render() {
-    return h('div', { style: 'margin-top:20px; border-top:2px dashed gray; padding:10px;' },
-      h('h3', {}, `${this.boardName} Board`),
-      h('p', {}, `Completed Issues: `, h('span', { bind: 'completedCount', style: 'font-weight:bold;' }, `${this.completedCount}`)),
-      ...this.issues.map(issue => h(IssueCard, {
-        props: { 
-          issueId: issue.id, 
-          title: issue.title, 
-          onComplete: this.markCompleted 
-        }
-      }))
+    return h(
+      "div",
+      { style: "margin-top:20px; border-top:2px dashed gray; padding:10px;" },
+      h("h3", {}, `${this.boardName} Board`),
+      h(
+        "p",
+        {},
+        `Completed Issues: `,
+        h("span", { bind: "completedCount", style: "font-weight:bold;" }, `${this.completedCount}`),
+      ),
+      ...this.issues.map((issue) =>
+        h(IssueCard, {
+          props: {
+            issueId: issue.id,
+            title: issue.title,
+            onComplete: this.markCompleted,
+          },
+        }),
+      ),
     );
   }
 }
@@ -100,9 +111,9 @@ class AdminPanel {
   static __meta = {
     actions: {
       logAction: {
-        reads: ['adminActions', 'lastAction']
-      }
-    }
+        reads: ["adminActions", "lastAction"],
+      },
+    },
   };
 
   logAction(source) {
@@ -111,14 +122,23 @@ class AdminPanel {
   }
 
   render() {
-    return h('div', {},
-      h('h1', {}, 'Admin Dashboard'),
-      h('div', { style: 'background:#eee; padding:10px;' },
-        h('p', {}, `Total Admin Actions: `, h('span', { bind: 'adminActions', style: 'color:blue' }, `${this.adminActions}`)),
-        h('p', {}, `Last Action: `, h('span', { bind: 'lastAction' }, this.lastAction))
+    return h(
+      "div",
+      {},
+      h("h1", {}, "Admin Dashboard"),
+      h(
+        "div",
+        { style: "background:#eee; padding:10px;" },
+        h(
+          "p",
+          {},
+          `Total Admin Actions: `,
+          h("span", { bind: "adminActions", style: "color:blue" }, `${this.adminActions}`),
+        ),
+        h("p", {}, `Last Action: `, h("span", { bind: "lastAction" }, this.lastAction)),
       ),
       // Render Child
-      h(KanbanBoard, { props: { boardName: 'Engineering', onAdminLog: this.logAction } })
+      h(KanbanBoard, { props: { boardName: "Engineering", onAdminLog: this.logAction } }),
     );
   }
 }
@@ -127,7 +147,7 @@ const registry = { AdminPanel, KanbanBoard, IssueCard };
 const clientMeta = {
   AdminPanel: { actions: AdminPanel.__meta.actions },
   KanbanBoard: { actions: KanbanBoard.__meta.actions },
-  IssueCard: { actions: IssueCard.__meta.actions }
+  IssueCard: { actions: IssueCard.__meta.actions },
 };
 
 // ==========================================
@@ -137,23 +157,23 @@ const clientMeta = {
 function renderHtml(instance, parentContext = null) {
   const ref = randomUUID();
   const compName = instance.constructor.name;
-  
+
   // Capture state
   const state = {};
   for (let k of Object.keys(instance)) {
-    if (typeof instance[k] !== 'function' && k !== 'issues') state[k] = instance[k];
+    if (typeof instance[k] !== "function" && k !== "issues") state[k] = instance[k];
   }
 
   // 2-Step Prop Injection
   const propsMeta = {};
   for (let k of Object.keys(instance)) {
-    if (typeof instance[k] === 'function') {
+    if (typeof instance[k] === "function") {
       const actionName = instance[k].name;
       if (parentContext) {
         propsMeta[k] = {
           component: parentContext.component,
           action: actionName,
-          ref: parentContext.ref
+          ref: parentContext.ref,
         };
       }
     }
@@ -171,19 +191,19 @@ function renderHtml(instance, parentContext = null) {
   html += `>`;
 
   for (let child of tree.children) {
-    if (typeof child === 'string') {
+    if (typeof child === "string") {
       html += child;
-    } else if (typeof child.tag === 'function') {
+    } else if (typeof child.tag === "function") {
       // Pass current context down to child
       html += renderHtml(new child.tag(child.props || {}), { component: compName, ref: ref });
     } else {
-      let cAttrs = '';
+      let cAttrs = "";
       if (child.onClick) cAttrs += ` data-action="${child.onClick}"`;
       if (child.bind) cAttrs += ` data-bind="${child.bind}"`;
       if (child.style) cAttrs += ` style="${child.style}"`;
-      
+
       // Recursive text binding for children containing variables
-      let textContent = child.children ? child.children.join('') : '';
+      let textContent = child.children ? child.children.join("") : "";
       html += `<${child.tag}${cAttrs}>${textContent}</${child.tag}>`;
     }
   }
@@ -197,9 +217,9 @@ function renderHtml(instance, parentContext = null) {
 
 const app = new Hono();
 
-app.get('/', (c) => {
+app.get("/", (c) => {
   const html = renderHtml(new AdminPanel());
-  
+
   const clientScript = `
     <script>
       window.__COMPONENTS__ = ${JSON.stringify(clientMeta)};
@@ -289,17 +309,19 @@ app.get('/', (c) => {
     </script>
   `;
 
-  return c.html(`<!DOCTYPE html><html><head><title>Complex Prototype</title></head><body><div id="app">${html}</div>${clientScript}</body></html>`);
+  return c.html(
+    `<!DOCTYPE html><html><head><title>Complex Prototype</title></head><body><div id="app">${html}</div>${clientScript}</body></html>`,
+  );
 });
 
-app.post('/rpc', async (c) => {
+app.post("/rpc", async (c) => {
   const payload = await c.req.json();
   const { action, self, reads, context } = payload;
   const writes = {};
 
   // 1. Instantiate ALL components in the call graph (Self + Contexts)
   const instances = {};
-  
+
   // Instantiate Self
   const SelfClass = registry[self.component];
   const selfInst = new SelfClass({});
@@ -335,7 +357,7 @@ app.post('/rpc', async (c) => {
       const ctxData = context[propName];
       const ctxInst = instances[ctxData.ref];
       const ctxMeta = registry[ctxData.component].__meta.actions[ctxData.action];
-      
+
       if (ctxMeta.calls) {
         for (const nestedProp in ctxMeta.calls) {
           const targetCtx = context[nestedProp];
@@ -352,7 +374,7 @@ app.post('/rpc', async (c) => {
 
   // 4. Extract writes for ALL components
   const selfWrites = {};
-  Object.keys(reads).forEach(k => selfWrites[k] = selfInst[k]);
+  Object.keys(reads).forEach((k) => (selfWrites[k] = selfInst[k]));
   writes[self.ref] = selfWrites;
 
   if (context) {
@@ -360,11 +382,11 @@ app.post('/rpc', async (c) => {
       const ctxData = context[propName];
       const ctxInst = instances[ctxData.ref];
       const ctxWrites = {};
-      Object.keys(ctxData.reads).forEach(k => ctxWrites[k] = ctxInst[k]);
+      Object.keys(ctxData.reads).forEach((k) => (ctxWrites[k] = ctxInst[k]));
       writes[ctxData.ref] = ctxWrites;
     }
   }
-  
+
   return c.json({ writes });
 });
 

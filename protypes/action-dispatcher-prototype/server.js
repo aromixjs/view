@@ -1,12 +1,12 @@
-import { Hono } from 'hono';
-import { serve } from '@hono/node-server';
-import { randomUUID } from 'crypto';
-import { Feed, PostCard } from './tags.js';
+import { Hono } from "hono";
+import { serve } from "@hono/node-server";
+import { randomUUID } from "crypto";
+import { Feed, PostCard } from "./tags.js";
 
 const registry = { PostCard, Feed };
 const clientMeta = {
   PostCard: { actions: PostCard.__meta.actions },
-  Feed: { actions: Feed.__meta.actions }
+  Feed: { actions: Feed.__meta.actions },
 };
 
 // ==========================================
@@ -16,17 +16,17 @@ const clientMeta = {
 function renderHtml(instance) {
   const ref = randomUUID();
   const compName = instance.constructor.name;
-  
+
   // Capture serializable state
   const state = {};
   for (let k of Object.keys(instance)) {
-    if (typeof instance[k] !== 'function') state[k] = instance[k];
+    if (typeof instance[k] !== "function") state[k] = instance[k];
   }
 
   // Capture prop mappings (function name only)
   const propsMeta = {};
   for (let k of Object.keys(instance)) {
-    if (typeof instance[k] === 'function') {
+    if (typeof instance[k] === "function") {
       propsMeta[k] = instance[k].name; // e.g., 'registerLike'
     }
   }
@@ -43,16 +43,16 @@ function renderHtml(instance) {
   html += `>`;
 
   for (let child of tree.children) {
-    if (typeof child === 'string') {
+    if (typeof child === "string") {
       html += child;
-    } else if (typeof child.tag === 'function') {
+    } else if (typeof child.tag === "function") {
       html += renderHtml(new child.tag(child.props));
     } else {
-      let cAttrs = '';
+      let cAttrs = "";
       if (child.onClick) cAttrs += ` data-action="${child.onClick}"`;
       if (child.bind) cAttrs += ` data-bind="${child.bind}"`;
       if (child.style) cAttrs += ` style="${child.style}"`;
-      html += `<${child.tag}${cAttrs}>${child.children ? child.children.join('') : ''}</${child.tag}>`;
+      html += `<${child.tag}${cAttrs}>${child.children ? child.children.join("") : ""}</${child.tag}>`;
     }
   }
 
@@ -65,9 +65,9 @@ function renderHtml(instance) {
 
 const app = new Hono();
 
-app.get('/', (c) => {
+app.get("/", (c) => {
   const html = renderHtml(new Feed());
-  
+
   const clientScript = `
     <script>
       window.__COMPONENTS__ = ${JSON.stringify(clientMeta)};
@@ -164,7 +164,7 @@ app.get('/', (c) => {
   `);
 });
 
-app.post('/rpc', async (c) => {
+app.post("/rpc", async (c) => {
   const { action, self, reads, context } = await c.req.json();
   const writes = {};
 
@@ -175,15 +175,15 @@ app.post('/rpc', async (c) => {
       const ctxData = context[propName];
       const ParentClass = registry[ctxData.component];
       if (!ParentClass) continue;
-      
+
       const parentInst = new ParentClass({});
       Object.assign(parentInst, ctxData.reads); // Apply state
-      
+
       parentInstances[propName] = {
         instance: parentInst,
         ref: ctxData.ref,
         reads: ctxData.reads,
-        action: ctxData.action
+        action: ctxData.action,
       };
     }
   }
@@ -191,10 +191,10 @@ app.post('/rpc', async (c) => {
   // 2. Reconstruct Self
   const SelfClass = registry[self.component];
   if (!SelfClass) return c.json({ error: "Component not found" }, 400);
-  
+
   // Instantiate self. Props don't matter here, state is overwritten.
   const instance = new SelfClass({});
-  Object.assign(instance, reads); 
+  Object.assign(instance, reads);
 
   // 3. GENERIC Wire up prop calls
   const meta = SelfClass.__meta.actions[action];
@@ -215,16 +215,16 @@ app.post('/rpc', async (c) => {
 
   // 5. GENERIC Extract writes
   const selfWrites = {};
-  Object.keys(reads).forEach(k => selfWrites[k] = instance[k]);
+  Object.keys(reads).forEach((k) => (selfWrites[k] = instance[k]));
   writes[self.ref] = selfWrites;
 
   for (const propName in parentInstances) {
     const pData = parentInstances[propName];
     const parentWrites = {};
-    Object.keys(pData.reads).forEach(k => parentWrites[k] = pData.instance[k]);
+    Object.keys(pData.reads).forEach((k) => (parentWrites[k] = pData.instance[k]));
     writes[pData.ref] = parentWrites;
   }
-  
+
   return c.json({ writes });
 });
 

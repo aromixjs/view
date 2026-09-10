@@ -19,10 +19,7 @@ const {
 } = registry;
 
 const app = new Hono();
-const template = readFileSync(
-  new URL("./index.html", import.meta.url),
-  "utf-8",
-);
+const template = readFileSync(new URL("./index.html", import.meta.url), "utf-8");
 
 function escapeAttr(s) {
   return s.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
@@ -64,12 +61,7 @@ app.get("/", (c) => {
   let headerHtml = wrap(Header, headerInst, headerInst.html(), "header-1");
 
   let wishlist = WishlistPanel({});
-  let wishlistHtml = wrap(
-    WishlistPanel,
-    wishlist,
-    wishlist.html(),
-    "wishlist-1",
-  );
+  let wishlistHtml = wrap(WishlistPanel, wishlist, wishlist.html(), "wishlist-1");
   let sidebarInst = Sidebar(wishlistHtml);
   let sidebarHtml = wrap(Sidebar, sidebarInst, sidebarInst.html(), "sidebar-1");
 
@@ -127,16 +119,11 @@ app.get("/", (c) => {
   let rootHtml = wrap(App, rootInst, rootInst.html(), "app-1");
 
   let meta = Object.fromEntries(
-    Object.entries(registry).map(([name, Factory]) => [
-      name,
-      Factory({}, "").meta,
-    ]),
+    Object.entries(registry).map(([name, Factory]) => [name, Factory({}, "").meta]),
   );
   let metaScript = `<script>window.__META__ = ${JSON.stringify(meta)}</script>`;
 
-  let page = template
-    .replace("<!--META-->", metaScript)
-    .replace("<!--APP-->", rootHtml);
+  let page = template.replace("<!--META-->", metaScript).replace("<!--APP-->", rootHtml);
   return c.html(page);
 });
 
@@ -144,15 +131,9 @@ app.post("/action", async (c) => {
   let body = await c.req.json();
   let Factory = registry[body.component];
   if (!Factory)
-    return c.json(
-      { error: { code: "UNKNOWN_COMPONENT", message: body.component } },
-      404,
-    );
+    return c.json({ error: { code: "UNKNOWN_COMPONENT", message: body.component } }, 404);
   if (typeof Factory({})?.actions?.[body.action] !== "function") {
-    return c.json(
-      { error: { code: "UNKNOWN_ACTION", message: body.action } },
-      404,
-    );
+    return c.json({ error: { code: "UNKNOWN_ACTION", message: body.action } }, 404);
   }
 
   let conflictVersion = checkVersion(body.ref, body.reads.__v);
@@ -184,8 +165,7 @@ app.post("/action", async (c) => {
   });
 
   if (result.error) return c.json({ error: result.error });
-  if (Object.keys(ctx.errors).length)
-    return c.json({ error: Object.values(ctx.errors)[0] });
+  if (Object.keys(ctx.errors).length) return c.json({ error: Object.values(ctx.errors)[0] });
 
   if (Object.keys(result.changed).length) {
     result.changed.__v = bumpVersion(body.ref);

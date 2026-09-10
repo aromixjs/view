@@ -3,11 +3,7 @@
     "target": "ESNext",
     "module": "ESNext",
     "moduleResolution": "Bundler",
-    "lib": [
-      "ESNext",
-      "DOM",
-      "DOM.Iterable"
-    ],
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -18,16 +14,7 @@
     "experimentalDecorators": true,
     "resolveJsonModule": true,
     "jsx": "preserve",
-    "types": [
-      "node",
-      "vitest/globals"
-    ],
+    "types": ["node", "vitest/globals"]
   },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.d.ts",
-    "playground/**/*.ts",
-    "tests/**/*.ts",
-    "demo/**/*.ts"
-  ]
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "playground/**/*.ts", "tests/**/*.ts", "demo/**/*.ts"]
 }

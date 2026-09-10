@@ -16,16 +16,16 @@
 // what makes trigger() generic across any target, without the proxy
 // needing to know that target's specific prop names ahead of time.
 
-import { AsyncLocalStorage } from 'node:async_hooks'
+import { AsyncLocalStorage } from "node:async_hooks";
 
-const als = new AsyncLocalStorage()
+const als = new AsyncLocalStorage();
 
 export function runWithContext(ctx, fn) {
-  return als.run(ctx, fn)
+  return als.run(ctx, fn);
 }
 
 export function session() {
-  return als.getStore()?.session
+  return als.getStore()?.session;
 }
 
 // `before` must come from extract() calls made right after construction,
@@ -38,44 +38,49 @@ export function session() {
 // change (a field with a default that's never read by this specific
 // action).
 function snapshotState(instance) {
-  let snap = {}
-  for (let key of instance.meta.state) snap[key] = instance.extract(key)
-  return snap
+  let snap = {};
+  for (let key of instance.meta.state) snap[key] = instance.extract(key);
+  return snap;
 }
 
 function diffState(instance, before) {
-  let changed = {}
+  let changed = {};
   for (let key of instance.meta.state) {
-    let after = instance.extract(key)
-    if (after !== before[key]) changed[key] = after
+    let after = instance.extract(key);
+    if (after !== before[key]) changed[key] = after;
   }
-  return changed
+  return changed;
 }
 
 export function trigger(Target) {
-  return new Proxy({}, {
-    get: (_, method) => (...args) => {
-      let ctx = als.getStore()
-      let key = `${Target.as}.${method}`
-      let entry = ctx.calls[key]
-      if (!entry) return // target not on this page, or nothing wired this request — silent no-op, by design
+  return new Proxy(
+    {},
+    {
+      get:
+        (_, method) =>
+        (...args) => {
+          let ctx = als.getStore();
+          let key = `${Target.as}.${method}`;
+          let entry = ctx.calls[key];
+          if (!entry) return; // target not on this page, or nothing wired this request — silent no-op, by design
 
-      let instance = Target({})
-      for (let [k, v] of Object.entries(entry.reads || {})) instance.update(k, v)
+          let instance = Target({});
+          for (let [k, v] of Object.entries(entry.reads || {})) instance.update(k, v);
 
-      let before = snapshotState(instance)
-      let result = instance.actions[method](...args)
-      if (result && result.error) {
-        ctx.errors[key] = result.error
-        return
-      }
-      let changed = diffState(instance, before)
-      if (Object.keys(changed).length) {
-        changed.__v = (entry.reads.__v || 0) + 1
-        ctx.writes[entry.ref] = { ...(ctx.writes[entry.ref] || {}), ...changed }
-      }
-    }
-  })
+          let before = snapshotState(instance);
+          let result = instance.actions[method](...args);
+          if (result && result.error) {
+            ctx.errors[key] = result.error;
+            return;
+          }
+          let changed = diffState(instance, before);
+          if (Object.keys(changed).length) {
+            changed.__v = (entry.reads.__v || 0) + 1;
+            ctx.writes[entry.ref] = { ...(ctx.writes[entry.ref] || {}), ...changed };
+          }
+        },
+    },
+  );
 }
 
 // Direct (non-trigger) callback props — `<ProductCard onAdd={recordAdd} />`
@@ -88,22 +93,22 @@ export function trigger(Target) {
 // ProductCategory in components.js).
 export function buildPropClosure(TargetFactory, entry) {
   return (...args) => {
-    let ctx = als.getStore()
-    let instance = TargetFactory({})
-    for (let [k, v] of Object.entries(entry.reads || {})) instance.update(k, v)
-    let before = snapshotState(instance)
-    instance.actions[entry.action](...args)
-    let changed = diffState(instance, before)
+    let ctx = als.getStore();
+    let instance = TargetFactory({});
+    for (let [k, v] of Object.entries(entry.reads || {})) instance.update(k, v);
+    let before = snapshotState(instance);
+    instance.actions[entry.action](...args);
+    let changed = diffState(instance, before);
     if (Object.keys(changed).length) {
-      changed.__v = (entry.reads.__v || 0) + 1
-      ctx.writes[entry.ref] = { ...(ctx.writes[entry.ref] || {}), ...changed }
+      changed.__v = (entry.reads.__v || 0) + 1;
+      ctx.writes[entry.ref] = { ...(ctx.writes[entry.ref] || {}), ...changed };
     }
-  }
+  };
 }
 
 export function diffAndRun(instance, actionName, params) {
-  let before = snapshotState(instance)
-  let result = instance.actions[actionName](...params)
-  if (result && result.error) return { error: result.error }
-  return { changed: diffState(instance, before) }
+  let before = snapshotState(instance);
+  let result = instance.actions[actionName](...params);
+  if (result && result.error) return { error: result.error };
+  return { changed: diffState(instance, before) };
 }
