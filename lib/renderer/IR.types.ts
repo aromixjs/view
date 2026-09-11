@@ -18,3 +18,12 @@ export interface AVTextNode {
 }
 
 export type AVIR = AVTagNode | AVTextNode;
+
+
+export interface AVActionMeta {
+  mutates: string[];
+  reads: string[];
+  params: string[];
+  calls: string[];
+  ref: Function
+}

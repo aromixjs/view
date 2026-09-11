@@ -1,4 +1,5 @@
-export function Toast() {
+import { Box } from "./Box";
+export function TextAndBtn() {
   let message = "Test";
 
   const show = () => {
@@ -39,6 +40,15 @@ export function Toast() {
       ],
     });
 
+
+
+    $.push({
+      type: 'avt' as const,
+      instance: Box(),
+      uuid: Box.uuid,
+      ref: Box
+    })
+
     return $;
   };
 
@@ -66,4 +76,4 @@ export function Toast() {
     template,
   };
 }
-Toast.uuid = '12sdf'
+TextAndBtn.uuid = '12sdf'

@@ -1,12 +1,12 @@
 import { join } from 'path';
 import { view } from './../lib';
-import { Toast } from './view/tags';
+import { TextAndBtn } from './view/TextAndBtn';
 
 view({
    route: [
       {
          path: '/',
-         tag: Toast
+         tag: TextAndBtn
       }
    ],
    port: 3000,
