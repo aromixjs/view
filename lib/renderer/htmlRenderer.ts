@@ -1,3 +1,4 @@
+import serializeJavascript from "serialize-javascript";
 import { AVIR, AVTagNode } from "./IR.types";
 
 
@@ -76,4 +77,11 @@ export class HtmlRenderer {
       html += `</${node.name}>`;
       return html;
    }
+
+   toInjectableScript(metaObj: object) {
+      const script = ["<script>", "window.AVM", "=", serializeJavascript(metaObj), "</script>"];
+
+      return script.join("");
+   }
+
 }
