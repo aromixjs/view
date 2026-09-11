@@ -11,6 +11,7 @@ export function Toast() {
     $.push({
       type: "tag" as const,
       name: "div",
+      attributes: [],
       children: [
         {
           type: "text" as const,
@@ -28,7 +29,6 @@ export function Toast() {
           key: 'onclick',
           value: show,
           bind: 'show'
-
         }
       ],
       children: [

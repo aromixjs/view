@@ -1,13 +1,12 @@
 import { serve } from "@hono/node-server";
 import { readFileSync } from "fs";
 import { Hono } from "hono";
+import { AVIRRenderer } from "./renderer/AVIRRenderer";
 
 export interface AVTagFn {
    (): any
    uuid: string
 }
-// const RPCRegistry = new Map<string, Function>()
-// const app = new Hono();
 
 // app.get("/", (c) => {
 //    const tag = Toast();
@@ -102,21 +101,11 @@ export interface AVTagFn {
 //    return c.text(content, 200)
 // })
 
-// serve(
-//    {
-//       fetch: app.fetch,
-//       port: 3000,
-//    },
-//    (info) => {
-//       console.log(`http://localhost:${info.port}`);
-//    },
-// );
-
 
 export interface ViewConfig {
    route: Array<{
       path: string,
-      render: AVTagFn
+      tag: AVTagFn
    }>
    port: number,
    rootPath: string
@@ -124,17 +113,28 @@ export interface ViewConfig {
 export function view(config: ViewConfig) {
    const app = new Hono()
    const RPCRegistry = new Map<string, Function>()
-   const rootHtml = readFileSync(config.rootPath)
+   const rootHtml = readFileSync(config.rootPath).toString()
+
+
    for (const route of config.route) {
-      const { path, render } = route;
-      const uuid = render.uuid;
-      RPCRegistry.set(uuid, render);
+      const { path, tag } = route;
+      const uuid = tag.uuid;
+      RPCRegistry.set(uuid, tag);
 
 
       app.get(path, (c) => {
-         const instance = render();
-         const ir = instance.html();
-         return c.json(ir);
+         const instance = tag();
+
+         const renderer = new AVIRRenderer({
+            uuid: tag.uuid,
+            IR: instance.template(),
+            actions: instance.actions
+         })
+
+         const { html, script } = renderer.render()
+
+         const finalHtml = rootHtml.replace("<!--root-->", html).replace("<!--meta-->", script)
+         return c.html(finalHtml, 200);
       });
    }
 

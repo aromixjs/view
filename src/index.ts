@@ -6,9 +6,9 @@ view({
    route: [
       {
          path: '/',
-         render: Toast
+         tag: Toast
       }
    ],
    port: 3000,
-   rootPath: join(import.meta.dirname, "./root.html")
+   rootPath: join(import.meta.dirname, "./index.html")
 })
