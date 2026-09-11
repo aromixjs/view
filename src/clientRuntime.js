@@ -26,7 +26,7 @@ events.forEach((event) => {
 
     const state = {};
 
-    for (const key of meta.reads || []) {
+    for (const key of meta.writes || []) {
       state[key] = runtime.state[key];
     }
 

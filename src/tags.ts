@@ -51,7 +51,7 @@ export function Toast() {
     props: {},
     actions: {
       show: {
-        reads: ['message'],
+        writes: ['message'],
         params: [],
         calls: [],
       },

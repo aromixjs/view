@@ -46,20 +46,53 @@ app.post('/rpc', async (c) => {
    const body: RpcBody = await c.req.json()
    const cInstance = RPCRegistry.get(body.componentId)
    if (!cInstance) {
-      return;
+      return c.json({
+         data: null,
+         errors: ['Component not found'],
+      })
    }
-   const meta = cInstance()
 
+   const meta = cInstance()
    for (const [key, value] of Object.entries(body.state)) {
       meta.update(key, value)
    }
 
    const action = meta.actions[body.action]
+   if (!action) {
+      return c.json({
+         data: null,
+         errors: ['Action not found'],
+      })
+   }
+
+   const actionMeta = meta.meta.actions[body.action];
+
+   if (!actionMeta) {
+      return c.json({
+         data: null,
+         errors: ['Action metadata not found'],
+      });
+   }
+
+
+
    action()
 
-   console.log(meta.meta.state.message);
 
-   return c.json(body)
+   const state: Record<string, unknown> = {};
+
+   for (const key of actionMeta.writes ?? []) {
+      state[key] = meta.meta.state[key];
+   }
+
+   return c.json({
+      data: {
+         componentId: body.componentId,
+         action: body.action,
+         state,
+      },
+      errors: [],
+   })
 })
 
 
