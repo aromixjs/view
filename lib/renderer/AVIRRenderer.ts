@@ -1,11 +1,6 @@
-import { AVIR, AVTagNode } from "./IR.types";
 
-export interface AVActionMeta {
-   mutates: string[];
-   reads: string[];
-   params: string[];
-   calls: string[];
-}
+
+
 
 export interface AVIRRendererConfig {
    IR: Array<AVIR>;

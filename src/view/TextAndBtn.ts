@@ -1,29 +1,32 @@
+import { AVComponentFactory, AVNode, AVNodeType } from "../../lib";
 import { Box } from "./Box";
-export function TextAndBtn() {
+export const TextAndBtn: AVComponentFactory = () => {
   let message = "Test";
 
   const show = () => {
     console.log(message);
   }
 
+
   const template = () => {
-    const $ = [];
+    const $: AVNode[] = [];
 
     $.push({
-      type: "tag" as const,
+      type: AVNodeType.PairTag,
       name: "div",
       attributes: [],
       children: [
         {
-          type: "text" as const,
+          type: AVNodeType.Text,
           value: message,
-          bind: 'message'
+          bind: 'message',
+          children: []
         },
       ],
     });
 
     $.push({
-      type: "tag" as const,
+      type: AVNodeType.PairTag,
       name: "button",
       attributes: [
         {
@@ -34,8 +37,10 @@ export function TextAndBtn() {
       ],
       children: [
         {
-          type: "text" as const,
+          type: AVNodeType.Text,
           value: "Click ME",
+          bind: undefined,
+          children: []
         },
       ],
     });
@@ -43,9 +48,8 @@ export function TextAndBtn() {
 
 
     $.push({
-      type: 'avt' as const,
+      type: AVNodeType.Component,
       instance: Box(),
-      uuid: Box.uuid,
       ref: Box
     })
 
@@ -66,10 +70,10 @@ export function TextAndBtn() {
     props: {},
     actions: {
       show: {
-        mutates: ['message'],
+        writes: ['message'],
         reads: ['message'],
-        params: [],
-        calls: [],
+        parameters: [],
+        triggers: [],
         ref: show
       },
     },

@@ -1,17 +1,20 @@
-export function Box() {
+import { AVComponentFactory, AVNode, AVNodeType } from "../../lib"
+
+export const Box: AVComponentFactory = () => {
   const content = 'Content From Server'
 
   const template = () => {
-    const $ = []
+    const $: AVNode[] = []
     $.push({
-      type: 'tag' as const,
+      type: AVNodeType.PairTag,
       name: 'div',
       attributes: [],
       children: [
         {
-          type: 'text' as const,
+          type: AVNodeType.Text,
           value: content,
-          bind: 'content'
+          bind: 'content',
+          children: []
         }
       ]
     })
@@ -26,8 +29,9 @@ export function Box() {
       }
     },
     template,
-    props: {}
+    props: {},
+    actions: {}
   }
 
 }
-Box.uuid='45ers'
+Box.uuid = '45ers'
