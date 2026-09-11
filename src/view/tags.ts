@@ -1,39 +1,39 @@
-import { AvHtmlIR } from "./render";
-
 export function Toast() {
   let message = "Test";
 
-  function show() {
-    message = crypto.randomUUID();
+  const show = () => {
+    console.log(message);
   }
 
-  const html = () => {
-    const _: AvHtmlIR[] = [];
+  const template = () => {
+    const _ = [];
 
     _.push({
-      type: "tag",
+      type: "tag" as const,
       name: "div",
-      attributes: {
-        "data-bind": "message",
-      },
       children: [
         {
-          type: "text",
+          type: "text" as const,
           value: message,
+          bind: 'message'
         },
       ],
     });
 
     _.push({
-      type: "tag",
+      type: "tag" as const,
       name: "button",
-      attributes: {
-        // onclick: show,
-        "data-click": "show",
-      },
+      attributes: [
+        {
+          key: 'onclick',
+          value: show,
+          bind: 'show'
+
+        }
+      ],
       children: [
         {
-          type: "text",
+          type: "text" as const,
           value: "Click ME",
         },
       ],
@@ -42,42 +42,28 @@ export function Toast() {
     return _;
   };
 
-  const meta = {
+
+  return {
     state: {
       get message() {
         return message;
       },
-    },
-    props: {},
-    actions: {
-      show: {
-        writes: ['message'],
-        params: [],
-        calls: [],
-      },
-    },
-  };
-
-
-
-  return {
-    extract: (key: string) => {
-      return key === "message" ? message : undefined;
-    },
-
-    update(key: string, value: any) {
-      if (key === "message") {
-        message = value;
+      set message(value) {
+        message = value
       }
     },
 
+    props: {},
     actions: {
-      show,
+      show: {
+        mutates: ['message'],
+        reads: ['message'],
+        params: [],
+        calls: [],
+        ref: show
+      },
     },
-    html,
-    meta,
+    template,
   };
 }
-
-
 Toast.uuid = '12sdf'
