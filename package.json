@@ -50,10 +50,7 @@
     "@aromix/core": "^0.6.0",
     "@aromix/view": "link:",
     "@hono/node-server": "^2.1.1",
-    "@types/serialize-javascript": "^5.0.4",
-    "h3": "2.0.1-rc.30",
     "hono": "^4.13.5",
-    "serialize-javascript": "^7.1.1",
     "typescript": "^5.9.3"
   },
   "devDependencies": {

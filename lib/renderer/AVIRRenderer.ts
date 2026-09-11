@@ -1,4 +1,3 @@
-import serializeJavascript from "serialize-javascript";
 import { AVIR, AVTagNode } from "./IR.types";
 
 export interface AVActionMeta {
