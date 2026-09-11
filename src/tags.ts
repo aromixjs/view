@@ -3,8 +3,8 @@ import { AvHtmlIR } from "./render";
 export function Toast() {
   let message = "Test";
 
-  function show(text: string) {
-    message = text;
+  function show() {
+    message = crypto.randomUUID();
   }
 
   const html = () => {
@@ -44,26 +44,25 @@ export function Toast() {
 
   const meta = {
     state: {
-      message,
+      get message() {
+        return message;
+      },
     },
     props: {},
     actions: {
       show: {
-        reads: [],
-        params: ["text"],
+        reads: ['message'],
+        params: [],
         calls: [],
       },
     },
   };
 
-  const ReadOnlyState: any = {
-    message,
-  };
+
 
   return {
-    uuid: "12485t",
     extract: (key: string) => {
-      return ReadOnlyState[key];
+      return key === "message" ? message : undefined;
     },
 
     update(key: string, value: any) {
@@ -79,3 +78,6 @@ export function Toast() {
     meta,
   };
 }
+
+
+Toast.uuid = '12sdf'

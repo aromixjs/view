@@ -6,20 +6,19 @@ import { toInjectableScript } from "./utils";
 import { Toast } from "./tags";
 import { AVIRRenderer } from "./render";
 
+
+const RPCRegistry = new Map<string, Function>()
 const app = new Hono();
 
 app.get("/", (c) => {
    const tag = Toast();
-
+   RPCRegistry.set(Toast.uuid, Toast)
    const renderer = new AVIRRenderer({
-      uuid: tag.uuid,
+      uuid: Toast.uuid,
       htmlIR: tag.html(),
    });
 
-
    const html = renderer.toHtml()
-
-
    const rootHtmlPath = join(import.meta.dirname, "./root.html");
    const rootHtml = readFileSync(rootHtmlPath, {
       encoding: "utf-8",
@@ -28,12 +27,48 @@ app.get("/", (c) => {
    const finalHtml = rootHtml.replace("<!--root-->", html).replace(
       "<!--meta-->",
       toInjectableScript({
-         [tag.uuid]: tag.meta
+         [Toast.uuid]: tag.meta,
+         events: ['click']
       }),
    );
 
    return c.html(finalHtml, 200);
 });
+
+
+interface RpcBody {
+   componentId: string,
+   action: string,
+   state: Record<string, string>
+}
+
+app.post('/rpc', async (c) => {
+   const body: RpcBody = await c.req.json()
+   const cInstance = RPCRegistry.get(body.componentId)
+   if (!cInstance) {
+      return;
+   }
+   const meta = cInstance()
+
+   for (const [key, value] of Object.entries(body.state)) {
+      meta.update(key, value)
+   }
+
+   const action = meta.actions[body.action]
+   action()
+
+   console.log(meta.meta.state.message);
+
+   return c.json(body)
+})
+
+
+
+app.get('/client.js', (c) => {
+   const fp = join(import.meta.dirname, 'clientRuntime.js')
+   const content = readFileSync(fp).toString()
+   return c.text(content, 200)
+})
 
 serve(
    {
