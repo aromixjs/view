@@ -1,6 +1,6 @@
 import { AVComponentFactory, AVNode, AVNodeType } from "../../lib"
 
-export const Box: AVComponentFactory = () => {
+const Box: AVComponentFactory = () => {
   const content = 'Content From Server'
 
   const template = () => {
@@ -35,3 +35,6 @@ export const Box: AVComponentFactory = () => {
 
 }
 Box.uuid = '45ers'
+
+
+export default Box

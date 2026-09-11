@@ -1,6 +1,7 @@
 import { AVComponentFactory, AVNode, AVNodeType } from "../../lib";
-import { Box } from "./Box";
-export const TextAndBtn: AVComponentFactory = () => {
+import Box from "./Box";
+
+const TextAndBtn: AVComponentFactory = () => {
   let message = "Test";
 
   const show = () => {
@@ -81,3 +82,6 @@ export const TextAndBtn: AVComponentFactory = () => {
   };
 }
 TextAndBtn.uuid = '12sdf'
+
+
+export default TextAndBtn;

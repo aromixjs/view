@@ -2,32 +2,35 @@ import { serve } from "@hono/node-server";
 import { readFileSync } from "fs";
 import { Hono } from "hono";
 import { AVIRRenderer } from "./renderer/AVIRRenderer";
+import { AVComponentFactory } from "./compiler/componentDefTypes";
 export interface ViewConfig {
    route: Array<{
       path: string,
-      tag: AVTagFn
+      load: Promise<{ default: AVComponentFactory }>
    }>
    port: number,
-   rootPath: string
+   base: string
 }
 
-export function view(config: ViewConfig) {
+export async function view(config: ViewConfig) {
    const app = new Hono()
    const RPCRegistry = new Map<string, Function>()
-   const rootHtml = readFileSync(config.rootPath).toString()
+   const rootHtml = readFileSync(config.base).toString()
 
 
    for (const route of config.route) {
-      const { path, tag } = route;
-      const uuid = tag.uuid;
-      RPCRegistry.set(uuid, tag);
+      const { path, load } = route;
+      const {default:componentFactory} = await load
+
+      const uuid = componentFactory.uuid;
+      RPCRegistry.set(uuid, componentFactory);
 
 
       app.get(path, (c) => {
-         const instance = tag();
+         const instance = componentFactory();
 
          const renderer = new AVIRRenderer({
-            uuid: tag.uuid,
+            uuid: componentFactory.uuid,
             IR: instance.template(),
             actions: instance.actions
          })
