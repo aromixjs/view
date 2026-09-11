@@ -6,9 +6,9 @@ export function Toast() {
   }
 
   const template = () => {
-    const _ = [];
+    const $ = [];
 
-    _.push({
+    $.push({
       type: "tag" as const,
       name: "div",
       children: [
@@ -20,7 +20,7 @@ export function Toast() {
       ],
     });
 
-    _.push({
+    $.push({
       type: "tag" as const,
       name: "button",
       attributes: [
@@ -39,7 +39,7 @@ export function Toast() {
       ],
     });
 
-    return _;
+    return $;
   };
 
 
