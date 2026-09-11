@@ -49,6 +49,25 @@ events.forEach((event) => {
     const result = await response.json();
 
     console.log("Result:", result);
+
+    if (result.errors?.length) {
+      return;
+    }
+
+    const updatedState = result.data?.state;
+    if (!updatedState) return;
+
+    for (const [key, value] of Object.entries(updatedState)) {
+      runtime.state[key] = value;
+
+      // Update DOM
+      document.querySelectorAll(`[data-av="${componentId}"][data-bind="${key}"]`).forEach((el) => {
+        el.textContent = value;
+      });
+    }
+
+
+
+
   });
 });
-
