@@ -17,9 +17,14 @@ const Box: ComponentIR.Factory = () => {
         {
           type: TemplateIR.NodeType.DynamicText,
           value: content,
-          bind: "content",
-          startOffset: 0,
-          endOffset: 0
+          bind: [
+            {
+              to: 'content',
+              startOffset: 0,
+              endOffset: 0
+            }
+          ],
+
         },
       ],
     });
@@ -37,6 +42,6 @@ const Box: ComponentIR.Factory = () => {
     actions: {},
   };
 };
-Box.uuid = "45ers";
+Box.uuid = "av1";
 
 export default Box;

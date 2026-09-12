@@ -15,7 +15,16 @@ export namespace ParseIR {
    }
 
    export function ToCallback(config: ToCallbackConfig) {
-      const { onComment, onStaticText, onDynamicText, node, onPairTag, onEmptyTag, onComponent } = config
+      const {
+         node,
+         onComment,
+         onStaticText,
+         onDynamicText,
+         onPairTag,
+         onEmptyTag,
+         onComponent
+      } = config
+
       switch (node.type) {
          case TemplateIR.NodeType.Comment:
             onComment(node)
@@ -39,37 +48,58 @@ export namespace ParseIR {
    }
 
 
-   export interface ToHtmlConfig {
-      factory: ComponentIR.Factory;
-      registry: Map<string, ComponentIR.Factory>;
-   }
 
-   export function ToHtml(config: ToHtmlConfig) {
-      const { factory, registry } = config;
 
+   export function ToHtml(
+      registry: Map<string, ComponentIR.Factory>,
+      factory: ComponentIR.Factory,
+   ) {
+
+      const instance = factory()
       registry.set(factory.uuid, factory);
-
-      const instance = factory();
       const html: string[] = [];
 
-      for (const node of instance.template()) {
-         ParseIR.ToCallback({
+      const render = (node: TemplateIR.Node) => {
+         ToCallback({
             node,
             onStaticText(node) {
+               html.push(node.value)
             },
             onDynamicText(node) {
+               html.push(node.value)
             },
             onComment(node) {
+               html.push('<!--', node.value, '-->')
             },
             onPairTag(node) {
+               html.push('<', node.name, '>')
+               for (const child of node.children) {
+                  render(child);
+               }
+               html.push("</", node.name, ">");
             },
             onEmptyTag(node) {
+               html.push("<", node.name, ">");
             },
             onComponent(node) {
+               registry.set(node.ref.uuid, node.ref);
+               for (const child of node.instance.template()) {
+                  render(child);
+               }
             }
          })
       }
+
+
+      for (const node of instance.template()) {
+         render(node);
+      }
+
+
+      return html.join('')
    }
+
+
 
 
 

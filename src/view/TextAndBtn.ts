@@ -23,9 +23,13 @@ const TextAndBtn: ComponentIR.Factory = () => {
         {
           type: TemplateIR.NodeType.DynamicText,
           value: message,
-          bind: "message",
-          startOffset: 0,
-          endOffset: 0
+          bind: [
+            {
+              to: "message",
+              startOffset: 0,
+              endOffset: 0
+            }
+          ],
         },
       ],
     });
@@ -37,9 +41,13 @@ const TextAndBtn: ComponentIR.Factory = () => {
         {
           key: "style",
           value: data,
-          bind: "data",
-          startOffset: 0,
-          endOffset: 0
+          bind: [
+            {
+              to: 'data',
+              startOffset: 0,
+              endOffset: 0
+            }
+          ]
         },
       ],
       staticAttributes: [],
@@ -90,6 +98,6 @@ const TextAndBtn: ComponentIR.Factory = () => {
     template,
   };
 };
-TextAndBtn.uuid = "12sdf";
+TextAndBtn.uuid = "av2";
 
 export default TextAndBtn;

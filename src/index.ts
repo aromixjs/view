@@ -1,5 +1,6 @@
 import { join } from "path";
-import { view } from "./../lib";
+import { view } from "../lib/view";
+
 
 view({
   route: [
