@@ -7,6 +7,7 @@ export enum AVNodeType {
   Component = 'Component'
 }
 
+// ## Attribute Is Not A Node
 export interface AVAttribute {
   key: string,
   value: any,
@@ -28,7 +29,6 @@ export interface AVTextNode {
   type: AVNodeType.Text,
   value: any,
   bind: any
-  children:Array<AVNode>
 }
 
 export interface AvComponentNode {

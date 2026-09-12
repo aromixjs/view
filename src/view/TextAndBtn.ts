@@ -21,7 +21,6 @@ const TextAndBtn: AVComponentFactory = () => {
           type: AVNodeType.Text,
           value: message,
           bind: 'message',
-          children: []
         },
       ],
     });
@@ -41,7 +40,6 @@ const TextAndBtn: AVComponentFactory = () => {
           type: AVNodeType.Text,
           value: "Click ME",
           bind: undefined,
-          children: []
         },
       ],
     });

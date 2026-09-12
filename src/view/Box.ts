@@ -14,7 +14,6 @@ const Box: AVComponentFactory = () => {
           type: AVNodeType.Text,
           value: content,
           bind: 'content',
-          children: []
         }
       ]
     })
