@@ -33,8 +33,9 @@ export function AvToHtml(config: AvToHtmlConfig) {
          rpcRegistry
       })
    }
-   
-   return base.replace('<!--root-->', html.join(''))
+
+   const eventArray = [...events]
+   return base.replace('<!--root-->', html.join('')).replace('<!--meta-->', `<script type="application/json">${JSON.stringify(eventArray)}</script>`)
 }
 
 

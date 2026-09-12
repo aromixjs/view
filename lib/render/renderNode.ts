@@ -22,7 +22,7 @@ export function renderNode(config: RenderNodeConfig) {
       case AVNodeType.PairTag: {
          onHtml('<', node.name);
          if (root) {
-            onHtml(" ", "data-av=\"", uuid, "\"");
+            onHtml(` av${uuid}`);
          }
 
          onHtml(">");
@@ -43,7 +43,7 @@ export function renderNode(config: RenderNodeConfig) {
       case AVNodeType.EmptyTag: {
          onHtml('<', node.name);
          if (root) {
-            onHtml(" ", "data-av=\"", uuid, "\"");
+            onHtml(` av${uuid}`);
          }
 
          onHtml('/>');
@@ -54,6 +54,16 @@ export function renderNode(config: RenderNodeConfig) {
          break;
       }
       case AVNodeType.Component: {
+         for (const ir of node.instance.template()) {
+            renderNode({
+               root: true,
+               node: ir,
+               onHtml,
+               onEvent,
+               uuid: node.ref.uuid,
+               rpcRegistry
+            })
+         }
          break;
       }
    }
