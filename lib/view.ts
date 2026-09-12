@@ -15,15 +15,17 @@ export interface ViewConfig {
 export async function view(config: ViewConfig) {
   const app = new Hono();
   const registry = new Map<string, ComponentIR.Factory>();
-  const _baseHtml = await readFile(config.base, { encoding: "utf-8" });
+  const baseHtml = await readFile(config.base, { encoding: "utf-8" });
 
   for (const route of config.route) {
     const { path, load } = route;
     const { default: componentFactory } = await load;
 
     app.get(path, (c) => {
-      const output = ParseIR.ToHtml(registry, componentFactory);
-      return c.html(output, 200);
+      const { html, meta } = ParseIR.ToHtml(registry, componentFactory);
+      const finalHtml = baseHtml.replace('<!--root-->', html).replace('<!--meta-->', `<script type="application/json">${JSON.stringify(meta)}</script>`)
+
+      return c.html(finalHtml, 200);
     });
   }
 

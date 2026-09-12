@@ -56,8 +56,9 @@ export namespace ParseIR {
    ) {
 
       const instance = factory()
-      registry.set(factory.uuid, factory);
+      registry.set(factory.id, factory);
       const html: string[] = [];
+      const meta: Record<string, any> = {}
 
       const render = (node: TemplateIR.Node) => {
          ToCallback({
@@ -67,22 +68,45 @@ export namespace ParseIR {
             },
             onDynamicText(node) {
                html.push(node.value)
+               meta[node.trackId] = node.bind
             },
             onComment(node) {
                html.push('<!--', node.value, '-->')
             },
             onPairTag(node) {
-               html.push('<', node.name, '>')
+               html.push('<', node.name)
+               for (const attr of node.dynamicAttributes) {
+                  html.push(' ', attr.key, '="', attr.value, '"')
+                  meta[attr.trackId] = attr.bind
+               }
+
+               for (const attr of node.staticAttributes) {
+                  html.push(' ', attr.key, '="', attr.value, '"')
+               }
+
+               html.push('>')
+
                for (const child of node.children) {
                   render(child);
                }
                html.push("</", node.name, ">");
             },
             onEmptyTag(node) {
-               html.push("<", node.name, ">");
+               html.push("<", node.name);
+
+               for (const attr of node.dynamicAttributes) {
+                  html.push(' ', attr.key, '="', attr.value, '"')
+                  meta[attr.trackId] = attr.bind
+               }
+
+               for (const attr of node.staticAttributes) {
+                  html.push(' ', attr.key, '="', attr.value, '"')
+               }
+
+               html.push('/>')
             },
             onComponent(node) {
-               registry.set(node.ref.uuid, node.ref);
+               registry.set(node.ref.id, node.ref);
                for (const child of node.instance.template()) {
                   render(child);
                }
@@ -90,13 +114,11 @@ export namespace ParseIR {
          })
       }
 
-
       for (const node of instance.template()) {
          render(node);
       }
 
-
-      return html.join('')
+      return { html: html.join(''), meta }
    }
 
 

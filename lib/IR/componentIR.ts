@@ -20,12 +20,8 @@ export namespace ComponentIR {
 
   export interface Factory {
     (): Instance;
-    uuid: string;
+    id: string;
   }
-
-
-
-
 
 }
 

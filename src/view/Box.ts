@@ -16,6 +16,7 @@ const Box: ComponentIR.Factory = () => {
       children: [
         {
           type: TemplateIR.NodeType.DynamicText,
+          trackId:'c1t1',
           value: content,
           bind: [
             {
@@ -42,6 +43,6 @@ const Box: ComponentIR.Factory = () => {
     actions: {},
   };
 };
-Box.uuid = "av1";
+Box.id = "c1";
 
 export default Box;

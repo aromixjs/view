@@ -23,6 +23,7 @@ const TextAndBtn: ComponentIR.Factory = () => {
         {
           type: TemplateIR.NodeType.DynamicText,
           value: message,
+          trackId: 'c2t1',
           bind: [
             {
               to: "message",
@@ -41,6 +42,7 @@ const TextAndBtn: ComponentIR.Factory = () => {
         {
           key: "style",
           value: data,
+          trackId: 'c2t2',
           bind: [
             {
               to: 'data',
@@ -55,6 +57,7 @@ const TextAndBtn: ComponentIR.Factory = () => {
         {
           key: "onclick",
           value: show,
+          trackId: 'c2t3',
           bind: "show",
         },
       ],
@@ -98,6 +101,6 @@ const TextAndBtn: ComponentIR.Factory = () => {
     template,
   };
 };
-TextAndBtn.uuid = "av2";
+TextAndBtn.id = "c2";
 
 export default TextAndBtn;
