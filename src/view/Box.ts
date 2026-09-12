@@ -1,20 +1,25 @@
-import { AVComponentFactory, AVNode, AVNodeType } from "../../lib";
+import { ComponentIR } from "../../lib/IR/componentIR";
+import { TemplateIR } from "../../lib/IR/templateIR";
 
-const Box: AVComponentFactory = () => {
+
+const Box: ComponentIR.Factory = () => {
   const content = "Content From Server";
 
   const template = () => {
-    const $: AVNode[] = [];
+    const $: TemplateIR.Node[] = [];
     $.push({
-      type: AVNodeType.PairTag,
+      type: TemplateIR.NodeType.PairTag,
       name: "div",
-      attributes: [],
       events: [],
+      staticAttributes: [],
+      dynamicAttributes: [],
       children: [
         {
-          type: AVNodeType.Text,
+          type: TemplateIR.NodeType.DynamicText,
           value: content,
           bind: "content",
+          startOffset: 0,
+          endOffset: 0
         },
       ],
     });

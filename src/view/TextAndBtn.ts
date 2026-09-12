@@ -1,40 +1,48 @@
-import { AVComponentFactory, AVNode, AVNodeType } from "../../lib";
+import { ComponentIR } from "../../lib/IR/componentIR";
+import { TemplateIR } from "../../lib/IR/templateIR";
 import Box from "./Box";
 
-const TextAndBtn: AVComponentFactory = () => {
+const TextAndBtn: ComponentIR.Factory = () => {
   let message = "Test";
+  const data = "background: red;";
 
   const show = () => {
     console.log(message);
   };
 
   const template = () => {
-    const $: AVNode[] = [];
+    const $: TemplateIR.Node[] = [];
 
     $.push({
-      type: AVNodeType.PairTag,
+      type: TemplateIR.NodeType.PairTag,
       name: "div",
-      attributes: [],
+      staticAttributes: [],
       events: [],
+      dynamicAttributes: [],
       children: [
         {
-          type: AVNodeType.Text,
+          type: TemplateIR.NodeType.DynamicText,
           value: message,
           bind: "message",
+          startOffset: 0,
+          endOffset: 0
         },
       ],
     });
 
     $.push({
-      type: AVNodeType.PairTag,
+      type: TemplateIR.NodeType.PairTag,
       name: "button",
-      attributes: [
+      dynamicAttributes: [
         {
-          key: 'style',
-          value: 'background: red;',
-          bind: null
-        }
+          key: "style",
+          value: data,
+          bind: "data",
+          startOffset: 0,
+          endOffset: 0
+        },
       ],
+      staticAttributes: [],
       events: [
         {
           key: "onclick",
@@ -44,15 +52,14 @@ const TextAndBtn: AVComponentFactory = () => {
       ],
       children: [
         {
-          type: AVNodeType.Text,
+          type: TemplateIR.NodeType.StaticText,
           value: "Click ME",
-          bind: null,
         },
       ],
     });
 
     $.push({
-      type: AVNodeType.Component,
+      type: TemplateIR.NodeType.Component,
       instance: Box(),
       ref: Box,
     });
