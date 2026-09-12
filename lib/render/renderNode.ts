@@ -1,17 +1,16 @@
 import { AVComponentFactory } from "../compiler/componentTypes";
 import { AVNode, AVNodeType } from "../compiler/templateTypes";
-import { AvToHtml } from "./AvToHtml";
+import { AVPageMeta } from "./AvPageMeta";
 export interface RenderNodeConfig {
    node: AVNode;
    root: boolean;
    uuid: string;
-   rpcRegistry: Map<string, AVComponentFactory>;
    onHtml(chunk: string): void;
-   onEvent(event: string): void;
+   meta: AVPageMeta
 }
 
 export function renderNode(config: RenderNodeConfig) {
-   const { node, root, uuid, onHtml, onEvent, rpcRegistry } = config;
+   const { node, root, uuid, onHtml, meta } = config;
 
    // Handle Comments
    if (node.type === AVNodeType.Comment) {
@@ -41,9 +40,8 @@ export function renderNode(config: RenderNodeConfig) {
             node: child,
             root: false,
             onHtml,
-            onEvent,
             uuid,
-            rpcRegistry,
+            meta
          });
       }
       onHtml(`</${node.name}>`);
@@ -71,9 +69,8 @@ export function renderNode(config: RenderNodeConfig) {
             root: true,
             node: ir,
             onHtml,
-            onEvent,
             uuid: node.ref.uuid,
-            rpcRegistry,
+            meta,
          });
       }
 

@@ -3,6 +3,7 @@ import { readFile } from "fs/promises";
 import { Hono } from "hono";
 import { AVComponentFactory } from "./compiler/componentTypes";
 import { AvToHtml } from "./render/AvToHtml";
+import { AVPageMeta } from "./render/AvPageMeta";
 export interface ViewConfig {
   route: Array<{
     path: string;
@@ -14,7 +15,7 @@ export interface ViewConfig {
 
 export async function view(config: ViewConfig) {
   const app = new Hono();
-  const RPCRegistry = new Map<string, AVComponentFactory>();
+  const componentRegistry = new Map<string, AVComponentFactory>();
   const baseHtml = await readFile(config.base, { encoding: "utf-8" });
 
   for (const route of config.route) {
@@ -23,7 +24,7 @@ export async function view(config: ViewConfig) {
 
     app.get(path, (c) => {
       const output = AvToHtml({
-        rpcRegistry: RPCRegistry,
+        meta: new AVPageMeta(componentRegistry),
         base: baseHtml,
         factory: componentFactory,
       });

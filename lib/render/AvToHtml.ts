@@ -1,36 +1,29 @@
 import { AVComponentFactory } from "../compiler/componentTypes";
+import { AVPageMeta } from "./AvPageMeta";
 import { renderNode } from "./renderNode";
-
 export interface AvToHtmlConfig {
   base: string;
-  rpcRegistry: Map<string, AVComponentFactory>;
+  meta: AVPageMeta
   factory: AVComponentFactory;
 }
 
 export function AvToHtml(config: AvToHtmlConfig) {
-  const { factory, rpcRegistry, base } = config;
+  const { factory, meta, base } = config;
+  meta.registerComponent(factory)
 
-  const uuid = factory.uuid;
-  rpcRegistry.set(uuid, factory);
-
-  const instance = factory();
-  const htmlIR = instance.template();
-
+  const avIr = factory().template();
   const html: string[] = [];
-  const events = new Set<string>();
 
-  for (const node of htmlIR) {
+
+  for (const node of avIr) {
     renderNode({
       node,
       root: true,
-      uuid,
+      uuid: factory.uuid,
       onHtml(chunk) {
         html.push(chunk);
       },
-      onEvent(e) {
-        events.add(e);
-      },
-      rpcRegistry,
+      meta
     });
   }
 
