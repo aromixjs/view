@@ -34,11 +34,8 @@ export function AvToHtml(config: AvToHtmlConfig) {
     });
   }
 
-  const eventArray = [...events];
+
   return base
     .replace("<!--root-->", html.join(""))
-    .replace(
-      "<!--meta-->",
-      `<script type="application/json">${JSON.stringify(eventArray)}</script>`,
-    );
+
 }
