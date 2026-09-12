@@ -1,4 +1,4 @@
-import { AVComponentFactory } from "../compiler/componentDefTypes";
+import { AVComponentFactory } from "../compiler/componentTypes";
 import { renderNode } from "./renderNode";
 
 export interface AvToHtmlConfig {
@@ -24,8 +24,8 @@ export function AvToHtml(config: AvToHtmlConfig) {
          node,
          root: true,
          uuid,
-         onHtml(chunk) {
-            html.push(chunk)
+         onHtml(...chunk) {
+            html.push(...chunk)
          },
          onEvent(e) {
             events.add(e)
@@ -33,8 +33,8 @@ export function AvToHtml(config: AvToHtmlConfig) {
          rpcRegistry
       })
    }
-
-   return base.replace('<!--root-->', html.join())
+   
+   return base.replace('<!--root-->', html.join(''))
 }
 
 

@@ -1,4 +1,4 @@
-import { AVNode } from "./templateIRTypes"
+import { AVNode } from "./templateTypes"
 
 export interface AVActionMeta {
    writes: Array<string>,

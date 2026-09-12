@@ -1,10 +1,11 @@
-import { AVComponentFactory } from "./componentDefTypes"
+import { AVComponentFactory, AVComponentInstance } from "./componentTypes"
 
 export enum AVNodeType {
   PairTag = 'PairTag',
   EmptyTag = 'EmptyTag',
   Text = 'Text',
-  Component = 'Component'
+  Component = 'Component',
+  Comment = 'Comment'
 }
 
 // ## Attribute Is Not A Node
@@ -18,7 +19,7 @@ export interface AVPairTagNode {
   type: AVNodeType.PairTag,
   name: string,
   attributes: Array<AVAttribute>
-  children:Array<AVNode>
+  children: Array<AVNode>
 }
 export interface AVEmptyTagNode {
   type: AVNodeType.EmptyTag,
@@ -33,8 +34,13 @@ export interface AVTextNode {
 
 export interface AvComponentNode {
   type: AVNodeType.Component,
-  instance: any,
+  instance: AVComponentInstance,
   ref: AVComponentFactory,
 }
 
-export type AVNode = AVPairTagNode | AVEmptyTagNode | AVTextNode | AvComponentNode;
+export interface AvCommentNode {
+  type: AVNodeType.Comment,
+  value: any,
+}
+
+export type AVNode = AVPairTagNode | AVEmptyTagNode | AVTextNode | AvComponentNode | AvCommentNode;

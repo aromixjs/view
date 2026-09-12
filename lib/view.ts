@@ -1,8 +1,8 @@
 import { serve } from "@hono/node-server";
-import { Hono } from "hono";
-import { AVComponentFactory } from "./compiler/componentDefTypes";
-import { AvToHtml } from "./renderer/AvToHtml";
 import { readFile } from "fs/promises";
+import { Hono } from "hono";
+import { AVComponentFactory } from "./compiler/componentTypes";
+import { AvToHtml } from "./render/AvToHtml";
 export interface ViewConfig {
    route: Array<{
       path: string,
@@ -28,7 +28,7 @@ export async function view(config: ViewConfig) {
             base: baseHtml,
             factory: componentFactory
          })
-
+         
          return c.html(output, 200);
       });
    }

@@ -1,5 +1,5 @@
-import { AVComponentFactory } from "../compiler/componentDefTypes"
-import { AVNode, AVNodeType } from "../compiler/templateIRTypes"
+import { AVComponentFactory } from "../compiler/componentTypes"
+import { AVNode, AVNodeType } from "../compiler/templateTypes"
 
 export interface RenderNodeConfig {
    node: AVNode
@@ -15,13 +15,18 @@ export function renderNode(config: RenderNodeConfig) {
    const { node, root, uuid, onHtml, onEvent, rpcRegistry } = config
 
    switch (node.type) {
+      case AVNodeType.Comment: {
+         onHtml("<!--", node.value, "-->");
+         break;
+      }
       case AVNodeType.PairTag: {
-         onHtml('<', node.name)
+         onHtml('<', node.name);
          if (root) {
-            onHtml(" ", "data-av=\"", uuid, "\"")
+            onHtml(" ", "data-av=\"", uuid, "\"");
          }
 
          onHtml(">");
+
          for (const child of node.children) {
             renderNode({
                node: child,
@@ -30,22 +35,22 @@ export function renderNode(config: RenderNodeConfig) {
                onEvent,
                uuid,
                rpcRegistry
-            })
+            });
          }
          onHtml("</", node.name, ">");
          break;
       }
       case AVNodeType.EmptyTag: {
-         onHtml('<', node.name)
+         onHtml('<', node.name);
          if (root) {
-            onHtml(" ", "data-av=\"", uuid, "\"")
+            onHtml(" ", "data-av=\"", uuid, "\"");
          }
 
-         onHtml('/>')
+         onHtml('/>');
          break;
       }
       case AVNodeType.Text: {
-         onHtml(node.value)
+         onHtml(node.value);
          break;
       }
       case AVNodeType.Component: {

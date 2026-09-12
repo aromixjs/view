@@ -1,5 +1,5 @@
-export * from './compiler/componentDefTypes';
-export * from './compiler/templateIRTypes';
-export * from './renderer/AvToHtml';
+export * from './compiler/componentTypes';
+export * from './compiler/templateTypes';
+export * from './render/AvToHtml';
 export * from './view';
 
