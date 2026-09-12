@@ -1,70 +1,81 @@
-import { AVComponentFactory } from "../compiler/componentTypes"
-import { AVNode, AVNodeType } from "../compiler/templateTypes"
-
+import { AVComponentFactory } from "../compiler/componentTypes";
+import { AVNode, AVNodeType } from "../compiler/templateTypes";
+import { AvToHtml } from "./AvToHtml";
 export interface RenderNodeConfig {
-   node: AVNode
-   root: boolean,
-   uuid: string,
-   rpcRegistry: Map<string, AVComponentFactory>
-   onHtml(...chunk: Array<string>): void
-   onEvent(event: string): void
-
+   node: AVNode;
+   root: boolean;
+   uuid: string;
+   rpcRegistry: Map<string, AVComponentFactory>;
+   onHtml(chunk: string): void;
+   onEvent(event: string): void;
 }
 
 export function renderNode(config: RenderNodeConfig) {
-   const { node, root, uuid, onHtml, onEvent, rpcRegistry } = config
+   const { node, root, uuid, onHtml, onEvent, rpcRegistry } = config;
 
-   switch (node.type) {
-      case AVNodeType.Comment: {
-         onHtml("<!--", node.value, "-->");
-         break;
-      }
-      case AVNodeType.PairTag: {
-         onHtml('<', node.name);
-         if (root) {
-            onHtml(` av${uuid}`);
-         }
+   // Handle Comments
+   if (node.type === AVNodeType.Comment) {
+      onHtml(`<!--${node.value}-->`);
+   }
 
-         onHtml(">");
+   // Handle Texts 
+   if (node.type === AVNodeType.Text) {
+      onHtml(node.value);
+   }
 
-         for (const child of node.children) {
-            renderNode({
-               node: child,
-               root: false,
-               onHtml,
-               onEvent,
-               uuid,
-               rpcRegistry
-            });
-         }
-         onHtml("</", node.name, ">");
-         break;
+   // Handle Pair Tag
+   if (node.type === AVNodeType.PairTag) {
+      onHtml(`<${node.name}`);
+      if (root) {
+         onHtml(` av${uuid}`);
       }
-      case AVNodeType.EmptyTag: {
-         onHtml('<', node.name);
-         if (root) {
-            onHtml(` av${uuid}`);
-         }
 
-         onHtml('/>');
-         break;
+      for (const attr of node.attributes) {
+         onHtml(` ${attr.key}="${attr.value}"`);
       }
-      case AVNodeType.Text: {
-         onHtml(node.value);
-         break;
+
+
+      onHtml(">");
+      for (const child of node.children) {
+         renderNode({
+            node: child,
+            root: false,
+            onHtml,
+            onEvent,
+            uuid,
+            rpcRegistry,
+         });
       }
-      case AVNodeType.Component: {
-         for (const ir of node.instance.template()) {
-            renderNode({
-               root: true,
-               node: ir,
-               onHtml,
-               onEvent,
-               uuid: node.ref.uuid,
-               rpcRegistry
-            })
-         }
-         break;
+      onHtml(`</${node.name}>`);
+   }
+
+
+   // Handle Empty Tag
+   if (node.type === AVNodeType.EmptyTag) {
+      onHtml(`<${node.name}`);
+      if (root) {
+         onHtml(` av${uuid}`);
       }
+
+      for (const attr of node.attributes) {
+         onHtml(` ${attr.key}="${attr.value}"`);
+      }
+
+      onHtml("/>");
+   }
+
+   // Handle Component
+   if (node.type === AVNodeType.Component) {
+      for (const ir of node.instance.template()) {
+         renderNode({
+            root: true,
+            node: ir,
+            onHtml,
+            onEvent,
+            uuid: node.ref.uuid,
+            rpcRegistry,
+         });
+      }
+
    }
 }

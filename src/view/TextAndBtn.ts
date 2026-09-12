@@ -6,8 +6,7 @@ const TextAndBtn: AVComponentFactory = () => {
 
   const show = () => {
     console.log(message);
-  }
-
+  };
 
   const template = () => {
     const $: AVNode[] = [];
@@ -16,11 +15,12 @@ const TextAndBtn: AVComponentFactory = () => {
       type: AVNodeType.PairTag,
       name: "div",
       attributes: [],
+      events: [],
       children: [
         {
           type: AVNodeType.Text,
           value: message,
-          bind: 'message',
+          bind: "message",
         },
       ],
     });
@@ -30,31 +30,35 @@ const TextAndBtn: AVComponentFactory = () => {
       name: "button",
       attributes: [
         {
-          key: 'onclick',
-          value: show,
-          bind: 'show'
+          key: 'style',
+          value: 'background: red;',
+          bind: null
         }
+      ],
+      events: [
+        {
+          key: "onclick",
+          value: show,
+          bind: "show",
+        },
       ],
       children: [
         {
           type: AVNodeType.Text,
           value: "Click ME",
-          bind: undefined,
+          bind: null,
         },
       ],
     });
 
-
-
     $.push({
       type: AVNodeType.Component,
       instance: Box(),
-      ref: Box
-    })
+      ref: Box,
+    });
 
     return $;
   };
-
 
   return {
     state: {
@@ -62,24 +66,23 @@ const TextAndBtn: AVComponentFactory = () => {
         return message;
       },
       set message(value) {
-        message = value
-      }
+        message = value;
+      },
     },
 
     props: {},
     actions: {
       show: {
-        writes: ['message'],
-        reads: ['message'],
+        writes: ["message"],
+        reads: ["message"],
         parameters: [],
         triggers: [],
-        ref: show
+        ref: show,
       },
     },
     template,
   };
-}
-TextAndBtn.uuid = '12sdf'
-
+};
+TextAndBtn.uuid = "12sdf";
 
 export default TextAndBtn;

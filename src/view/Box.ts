@@ -1,39 +1,37 @@
-import { AVComponentFactory, AVNode, AVNodeType } from "../../lib"
+import { AVComponentFactory, AVNode, AVNodeType } from "../../lib";
 
 const Box: AVComponentFactory = () => {
-  const content = 'Content From Server'
+  const content = "Content From Server";
 
   const template = () => {
-    const $: AVNode[] = []
+    const $: AVNode[] = [];
     $.push({
       type: AVNodeType.PairTag,
-      name: 'div',
+      name: "div",
       attributes: [],
+      events: [],
       children: [
         {
           type: AVNodeType.Text,
           value: content,
-          bind: 'content',
-        }
-      ]
-    })
-    return $
-  }
-
+          bind: "content",
+        },
+      ],
+    });
+    return $;
+  };
 
   return {
     state: {
       get content() {
-        return content
-      }
+        return content;
+      },
     },
     template,
     props: {},
-    actions: {}
-  }
+    actions: {},
+  };
+};
+Box.uuid = "45ers";
 
-}
-Box.uuid = '45ers'
-
-
-export default Box
+export default Box;
