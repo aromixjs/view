@@ -23,12 +23,11 @@ const TextAndBtn: ComponentIR.Factory = () => {
         {
           type: TemplateIR.NodeType.DynamicText,
           value: message,
-          trackId: 'c2t1',
           bind: [
             {
               to: "message",
-              startOffset: 0,
-              endOffset: 0
+              start: 0,
+              length: message.length
             }
           ],
         },
@@ -42,12 +41,11 @@ const TextAndBtn: ComponentIR.Factory = () => {
         {
           key: "style",
           value: data,
-          trackId: 'c2t2',
           bind: [
             {
               to: 'data',
-              startOffset: 0,
-              endOffset: 0
+              start: 0,
+              length: data.length
             }
           ]
         },
@@ -57,7 +55,6 @@ const TextAndBtn: ComponentIR.Factory = () => {
         {
           key: "onclick",
           value: show,
-          trackId: 'c2t3',
           bind: "show",
         },
       ],

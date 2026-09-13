@@ -16,13 +16,12 @@ const Box: ComponentIR.Factory = () => {
       children: [
         {
           type: TemplateIR.NodeType.DynamicText,
-          trackId:'c1t1',
           value: content,
           bind: [
             {
               to: 'content',
-              startOffset: 0,
-              endOffset: 0
+              start: 0,
+              length: content.length
             }
           ],
 

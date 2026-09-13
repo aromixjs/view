@@ -68,7 +68,7 @@ export namespace ParseIR {
             },
             onDynamicText(node) {
                html.push(node.value)
-               meta[node.trackId] = node.bind
+               // meta[node.trackId] = node.bind
             },
             onComment(node) {
                html.push('<!--', node.value, '-->')
@@ -77,7 +77,7 @@ export namespace ParseIR {
                html.push('<', node.name)
                for (const attr of node.dynamicAttributes) {
                   html.push(' ', attr.key, '="', attr.value, '"')
-                  meta[attr.trackId] = attr.bind
+                  // meta[attr.trackId] = attr.bind
                }
 
                for (const attr of node.staticAttributes) {
@@ -96,7 +96,7 @@ export namespace ParseIR {
 
                for (const attr of node.dynamicAttributes) {
                   html.push(' ', attr.key, '="', attr.value, '"')
-                  meta[attr.trackId] = attr.bind
+                  // meta[attr.trackId] = attr.bind
                }
 
                for (const attr of node.staticAttributes) {

@@ -1,6 +1,6 @@
 import { ComponentIR } from "./componentIR";
 export namespace TemplateIR {
-  
+
   export enum NodeType {
     PairTag = "PairTag",
     EmptyTag = "EmptyTag",
@@ -18,11 +18,10 @@ export namespace TemplateIR {
   export interface DynamicAttributeSubNode {
     key: string;
     value: string;
-    trackId: string
     bind: Array<{
       to: string;
-      startOffset: number;
-      endOffset: number;
+      start: number;
+      length: number;
     }>
   }
 
@@ -30,7 +29,6 @@ export namespace TemplateIR {
     key: string;
     value: Function;
     bind: string;
-    trackId: string
   }
 
   export interface PairTagNode {
@@ -58,11 +56,10 @@ export namespace TemplateIR {
   export interface DynamicTextNode {
     type: NodeType.DynamicText;
     value: string;
-    trackId: string
     bind: Array<{
       to: string;
-      startOffset: number;
-      endOffset: number;
+      start: number;
+      length: number;
     }>
   }
 
