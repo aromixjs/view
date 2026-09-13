@@ -2,7 +2,8 @@ import { serve } from "@hono/node-server";
 import { readFile } from "fs/promises";
 import { Hono } from "hono";
 import { ComponentIR } from "./IR/componentIR";
-import { ParseIR, ToHtml } from "./IR/parseIR";
+import { ParseIR } from "./IR/parseIR";
+
 export interface ViewConfig {
   route: Array<{
     path: string;
@@ -22,13 +23,13 @@ export async function view(config: ViewConfig) {
     const { default: factory } = await load;
 
     app.get(path, (c) => {
-      const { html, meta } = ToHtml({
+      const html = ParseIR.ToHtml({
         registry,
         factory
       });
-      // const finalHtml = baseHtml.replace('<!--root-->', html).replace('<!--meta-->', `<script type="application/json">${JSON.stringify(meta)}</script>`)
+      const finalHtml = baseHtml.replace('<!--root-->', html)
 
-      return c.json(meta, 200);
+      return c.html(finalHtml, 200);
     });
   }
 

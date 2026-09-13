@@ -16,20 +16,17 @@ const TextAndBtn: ComponentIR.Factory = () => {
     $.push({
       type: TemplateIR.NodeType.PairTag,
       name: "div",
-      staticAttributes: [],
+      attributes: [
+        {
+          key: 'lay',
+          value: `av:[text:c2.message textStart:0 textLength:${message.length}]`
+        }
+      ],
       events: [],
-      dynamicAttributes: [],
       children: [
         {
-          type: TemplateIR.NodeType.DynamicText,
+          type: TemplateIR.NodeType.Text,
           value: message,
-          bind: [
-            {
-              to: "message",
-              start: 0,
-              length: message.length
-            }
-          ],
         },
       ],
     });
@@ -37,20 +34,16 @@ const TextAndBtn: ComponentIR.Factory = () => {
     $.push({
       type: TemplateIR.NodeType.PairTag,
       name: "button",
-      dynamicAttributes: [
+      attributes: [
         {
           key: "style",
           value: data,
-          bind: [
-            {
-              to: 'data',
-              start: 0,
-              length: data.length
-            }
-          ]
         },
+        {
+          key: 'lay',
+          value: `av:[style:c2.data start:0 length:${data.length}]`
+        }
       ],
-      staticAttributes: [],
       events: [
         {
           key: "onclick",
@@ -60,7 +53,7 @@ const TextAndBtn: ComponentIR.Factory = () => {
       ],
       children: [
         {
-          type: TemplateIR.NodeType.StaticText,
+          type: TemplateIR.NodeType.Text,
           value: "Click ME",
         },
       ],

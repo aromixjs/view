@@ -11,20 +11,17 @@ const Box: ComponentIR.Factory = () => {
       type: TemplateIR.NodeType.PairTag,
       name: "div",
       events: [],
-      staticAttributes: [],
-      dynamicAttributes: [],
+      attributes: [
+        {
+          key: 'lay',
+          value: `av:[text:c1.content textStart:0 textLength:${content.length}]`
+        }
+      ],
+
       children: [
         {
-          type: TemplateIR.NodeType.DynamicText,
+          type: TemplateIR.NodeType.Text,
           value: content,
-          bind: [
-            {
-              to: 'content',
-              start: 0,
-              length: content.length
-            }
-          ],
-
         },
       ],
     });

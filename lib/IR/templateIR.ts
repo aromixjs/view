@@ -4,26 +4,17 @@ export namespace TemplateIR {
   export enum NodeType {
     PairTag = "PairTag",
     EmptyTag = "EmptyTag",
-    StaticText = "StaticText",
-    DynamicText = "DynamicText",
+    Text = "Text",
     Component = "Component",
     Comment = "Comment",
   }
 
-  export interface StaticAttributeSubNode {
+  export interface AttributeSubNode {
     key: string;
     value: string;
   }
 
-  export interface DynamicAttributeSubNode {
-    key: string;
-    value: string;
-    bind: Array<{
-      to: string;
-      start: number;
-      length: number;
-    }>
-  }
+
 
   export interface EventSubNode {
     key: string;
@@ -34,8 +25,7 @@ export namespace TemplateIR {
   export interface PairTagNode {
     type: NodeType.PairTag;
     name: string;
-    staticAttributes: Array<StaticAttributeSubNode>;
-    dynamicAttributes: Array<DynamicAttributeSubNode>;
+    attributes: Array<AttributeSubNode>;
     events: Array<EventSubNode>;
     children: Array<Node>;
   }
@@ -43,25 +33,15 @@ export namespace TemplateIR {
   export interface EmptyTagNode {
     type: NodeType.EmptyTag;
     name: string;
-    staticAttributes: Array<StaticAttributeSubNode>;
-    dynamicAttributes: Array<DynamicAttributeSubNode>;
+    attributes: Array<AttributeSubNode>;
     events: Array<EventSubNode>;
   }
 
-  export interface StaticTextNode {
-    type: NodeType.StaticText;
+  export interface TextNode {
+    type: NodeType.Text;
     value: string;
   }
 
-  export interface DynamicTextNode {
-    type: NodeType.DynamicText;
-    value: string;
-    bind: Array<{
-      to: string;
-      start: number;
-      length: number;
-    }>
-  }
 
   export interface ComponentNode {
     type: NodeType.Component;
@@ -77,8 +57,7 @@ export namespace TemplateIR {
   export type Node =
     | PairTagNode
     | EmptyTagNode
-    | StaticTextNode
-    | DynamicTextNode
+    | TextNode
     | ComponentNode
     | CommentNode;
 }
