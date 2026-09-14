@@ -900,3 +900,95 @@ browser gets:
 <button lay="av:[e.click:c3.a0 c3.a0:c2.a0 c3.a0:c2.s0]">Add One</button>
 <div lay="av:[t:c2.s0]">Current: 1</div>
 ```
+
+
+---
+
+### Explicit Cross-Component Triggers (Far Tree Communication)
+
+
+
+Note:
+Prop drilling is great for direct parent-child relationships, but when two components far apart in the tree need to communicate, prop drilling becomes tedious.
+
+Because the server only hydrates the specific component instance making the RPC call (and any components linked via its lay metadata), you cannot use a global event bus or shared store on the server.
+
+Instead, you use the explicit trigger API. The compiler statically analyzes calls to the trigger proxy and injects a trigger:Component.action token directly into the local function's lay dependency list. This tells the client to find that other component on the page, pack its state, and send it along in the RPC request so the server can build a stand-in closure for it.
+
+
+User Writes:
+
+
+
+
+```html
+<!-- App.av -->
+<script server>
+  import Header from "./Header.av";
+  import UserList from "./UserList.av";
+</script>
+<Header />
+<UserList />
+```
+
+```html
+<!-- Header.av -->
+<script server>
+  // Explicitly declare trigger targets
+  const t = trigger({ UserList }); 
+
+  let searchQuery = "";
+  function syncList() {
+    // Call the action on the target component
+    t.UserList.refresh(searchQuery); 
+  }
+</script>
+<button onClick={syncList}>Sync List</button>
+```
+
+Component IR Generated (Header):
+
+
+```js
+function Header() {
+  const t = trigger({ UserList });
+
+  let searchQuery = "";
+  function syncList() {
+    t.UserList.refresh(searchQuery);
+  }
+
+  const template = () => {
+    const $ = [];
+
+    $.push({
+      type: NodeType.PairTag,
+      name: "button",
+      attributes: [
+        {
+          key: "lay",
+          // Compiler sees syncList (a0) calls t.UserList.refresh.
+          // It injects a trigger token directly into the dep list.
+          value: "av:[e.click:c2.a0 c2.a0:trigger:UserList.a0]"
+        }
+      ],
+      child: [{ type: NodeType.Text, value: "Sync List" }]
+    });
+
+    return $;
+  };
+
+  return {
+    a0: syncList,
+    get s0() { return searchQuery; },
+    set s0(v) { searchQuery = v; }
+  };
+}
+```
+
+
+browser gets:
+
+```html
+<button lay="av:[e.click:c2.a0 c2.a0:trigger:c2.a0]">Sync List</button>
+```
