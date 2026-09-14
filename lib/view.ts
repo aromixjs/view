@@ -3,6 +3,8 @@ import { readFile } from "fs/promises";
 import { Hono } from "hono";
 import { ComponentIR } from "./IR/componentIR";
 import { ParseIR } from "./IR/parseIR";
+import { readFileSync } from "fs";
+import { join } from "path";
 
 export interface ViewConfig {
   route: Array<{
@@ -32,6 +34,17 @@ export async function view(config: ViewConfig) {
       return c.html(finalHtml, 200);
     });
   }
+
+
+
+  app.get('/layos', (c) => {
+
+    const lay = readFileSync(join(import.meta.dirname, 'layos.js')).toString()
+    c.header('Content-Type', 'application/javascript')
+    c.header('Cache-Control', 'public, max-age=3600')
+    return c.text(lay)
+  })
+
 
   serve(
     {
