@@ -40,7 +40,7 @@ export async function view(config: ViewConfig) {
 
   app.get('/parser.js', async (c) => {
     const result = await esbuild.build({
-      entryPoints: [join(import.meta.dirname, 'layos', 'parser.ts')],
+      entryPoints: [join(import.meta.dirname, 'lay', 'parser.ts')],
       bundle: true,
       write: false,
       format: 'esm',
