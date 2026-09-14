@@ -12,13 +12,66 @@
     <script type="module">
       import { TokenParser } from "http://localhost:3000/parser.js";
 
-      const element = document.querySelector("[lay]");
-      const source = element.attributes[0].value;
+      const tokens = {
+        bg(c) {
+          console.log(c);
+        },
+        dialog(c) {
+          console.log(c);
+        },
+        toggle(c) {
+          console.log(c);
+        },
+      };
 
-      const output = TokenParser(source);
-      output.forEach((v) => {
-        console.log(v);
-      });
+      function Av(el, scopes) {
+        for (const node of scopes) {
+          const key = {
+            kind: "",
+            name: "",
+          };
+
+          if (node.key.includes(".")) {
+            const [kind, name] = node.key.split(".");
+            key.kind = kind;
+            key.name = name;
+          }
+
+          if (key.kind === "t") {
+            console.log(node);
+            console.log(key);
+          } else if (key.kind === "a") {
+            console.log(node);
+            console.log(key);
+          } else if (key.kind === "e") {
+            console.log(node);
+            console.log(key);
+          }
+        }
+      }
+
+      function dispatch(el, nodes) {
+        for (const node of nodes) {
+          if (node.key === "av") {
+            Av(el, node.scopes);
+            continue;
+          }
+
+          // tokens[node.key]({
+          //   el,
+          //   value: node.value,
+          //   scopes: node.scopes,
+          // });
+        }
+      }
+
+      const elements = document.querySelectorAll("[lay]");
+      for (const element of elements) {
+        const source = element.getAttribute("lay");
+        if (source === null) continue;
+        const output = TokenParser(source);
+        dispatch(element, output);
+      }
     </script>
   </body>
 </html>
