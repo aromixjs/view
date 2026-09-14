@@ -1,7 +1,6 @@
 import { ComponentIR } from "../../lib/IR/componentIR";
 import { TemplateIR } from "../../lib/IR/templateIR";
 
-
 const Box: ComponentIR.Factory = () => {
   const content = "Content From Server";
 
@@ -11,12 +10,7 @@ const Box: ComponentIR.Factory = () => {
       type: TemplateIR.NodeType.PairTag,
       name: "div",
       events: [],
-      attributes: [
-        {
-          key: 'lay',
-          value: `av:[text:c1.content textStart:0 textLength:${content.length}]`
-        }
-      ],
+      attributes: [],
 
       children: [
         {

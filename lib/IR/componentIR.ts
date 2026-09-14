@@ -1,8 +1,6 @@
 import { TemplateIR } from "./templateIR";
 
-
 export namespace ComponentIR {
-
   export interface ActionMeta {
     writes: Array<string>;
     reads: Array<string>;
@@ -22,6 +20,4 @@ export namespace ComponentIR {
     (): Instance;
     id: string;
   }
-
 }
-

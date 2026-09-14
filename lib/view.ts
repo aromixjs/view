@@ -25,9 +25,9 @@ export async function view(config: ViewConfig) {
     app.get(path, (c) => {
       const html = ParseIR.ToHtml({
         registry,
-        factory
+        factory,
       });
-      const finalHtml = baseHtml.replace('<!--root-->', html)
+      const finalHtml = baseHtml.replace("<!--root-->", html);
 
       return c.html(finalHtml, 200);
     });

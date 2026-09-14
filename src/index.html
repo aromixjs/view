@@ -8,5 +8,19 @@
   </head>
   <body>
     <!--root-->
+    <input value="122" id="test" />
+    <input lay="av:[a.value:c2.s0]" />
+    <input lay="av:[a.aria-label:c2.s1]" />
+    <button lay="av:[e.click:c2.a0 c2.a0:c2.s0 c2.a0:c2.s1]">Save</button>
+
+    <script>
+      const input = document.querySelector("#test");
+
+      console.dir(input.value);
+
+      input.addEventListener("input", () => {
+        console.dir(input.value);
+      });
+    </script>
   </body>
 </html>

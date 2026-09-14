@@ -18,9 +18,9 @@ const TextAndBtn: ComponentIR.Factory = () => {
       name: "div",
       attributes: [
         {
-          key: 'lay',
-          value: `av:[text:c2.message textStart:0 textLength:${message.length}]`
-        }
+          key: "lay",
+          value: `av:[text:c2.message textStart:0 textLength:${message.length}]`,
+        },
       ],
       events: [],
       children: [
@@ -40,9 +40,9 @@ const TextAndBtn: ComponentIR.Factory = () => {
           value: data,
         },
         {
-          key: 'lay',
-          value: `av:[style:c2.data start:0 length:${data.length}]`
-        }
+          key: "lay",
+          value: `av:[style:c2.data start:0 length:${data.length}]`,
+        },
       ],
       events: [
         {

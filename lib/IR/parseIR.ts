@@ -1,58 +1,45 @@
 import { ComponentIR } from "./componentIR";
 import { TemplateIR } from "./templateIR";
 
-
 export namespace ParseIR {
   export interface ToCallbackConfig {
     node: TemplateIR.Node;
-    onText(node: TemplateIR.TextNode): void
-    onComment(node: TemplateIR.CommentNode): void
-    onPairTag(node: TemplateIR.PairTagNode): void
-    onEmptyTag(node: TemplateIR.EmptyTagNode): void
-    onComponent(node: TemplateIR.ComponentNode): void
+    onText(node: TemplateIR.TextNode): void;
+    onComment(node: TemplateIR.CommentNode): void;
+    onPairTag(node: TemplateIR.PairTagNode): void;
+    onEmptyTag(node: TemplateIR.EmptyTagNode): void;
+    onComponent(node: TemplateIR.ComponentNode): void;
   }
 
   export function ToCallback(config: ToCallbackConfig) {
-    const {
-      node,
-      onComment,
-      onText,
-      onPairTag,
-      onEmptyTag,
-      onComponent
-    } = config
+    const { node, onComment, onText, onPairTag, onEmptyTag, onComponent } = config;
 
     switch (node.type) {
       case TemplateIR.NodeType.Comment:
-        onComment(node)
+        onComment(node);
         break;
       case TemplateIR.NodeType.Text:
-        onText(node)
+        onText(node);
         break;
       case TemplateIR.NodeType.PairTag:
-        onPairTag(node)
+        onPairTag(node);
         break;
       case TemplateIR.NodeType.EmptyTag:
-        onEmptyTag(node)
+        onEmptyTag(node);
         break;
       case TemplateIR.NodeType.Component:
-        onComponent(node)
+        onComponent(node);
         break;
     }
   }
 
   export interface ToHtmlConfig {
-    factory: ComponentIR.Factory
-    registry: Map<string, ComponentIR.Factory>
-
+    factory: ComponentIR.Factory;
+    registry: Map<string, ComponentIR.Factory>;
   }
 
-  export function ToHtml({
-    factory,
-    registry
-  }: ToHtmlConfig) {
-
-    const instance = factory()
+  export function ToHtml({ factory, registry }: ToHtmlConfig) {
+    const instance = factory();
     registry.set(factory.id, factory);
     const html: string[] = [];
 
@@ -60,18 +47,18 @@ export namespace ParseIR {
       ToCallback({
         node,
         onText(node) {
-          html.push(node.value)
+          html.push(node.value);
         },
         onComment(node) {
-          html.push('<!--', node.value, '-->')
+          html.push("<!--", node.value, "-->");
         },
         onPairTag(node) {
-          html.push('<', node.name)
+          html.push("<", node.name);
           for (const attr of node.attributes) {
-            html.push(' ', attr.key, '="', attr.value, '"')
+            html.push(" ", attr.key, '="', attr.value, '"');
           }
 
-          html.push('>')
+          html.push(">");
 
           for (const child of node.children) {
             render(child);
@@ -82,27 +69,24 @@ export namespace ParseIR {
           html.push("<", node.name);
 
           for (const attr of node.attributes) {
-            html.push(' ', attr.key, '="', attr.value, '"')
+            html.push(" ", attr.key, '="', attr.value, '"');
           }
 
-          html.push('/>')
+          html.push("/>");
         },
         onComponent(node) {
           registry.set(node.ref.id, node.ref);
           for (const child of node.instance.template()) {
             render(child);
           }
-        }
-      })
-    }
+        },
+      });
+    };
 
     for (const node of instance.template()) {
       render(node);
     }
 
-    return html.join('')
+    return html.join("");
   }
-
-
-
 }

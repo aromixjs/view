@@ -1,6 +1,5 @@
 import { ComponentIR } from "./componentIR";
 export namespace TemplateIR {
-
   export enum NodeType {
     PairTag = "PairTag",
     EmptyTag = "EmptyTag",
@@ -13,8 +12,6 @@ export namespace TemplateIR {
     key: string;
     value: string;
   }
-
-
 
   export interface EventSubNode {
     key: string;
@@ -42,7 +39,6 @@ export namespace TemplateIR {
     value: string;
   }
 
-
   export interface ComponentNode {
     type: NodeType.Component;
     instance: ComponentIR.Instance;
@@ -54,10 +50,5 @@ export namespace TemplateIR {
     value: string;
   }
 
-  export type Node =
-    | PairTagNode
-    | EmptyTagNode
-    | TextNode
-    | ComponentNode
-    | CommentNode;
+  export type Node = PairTagNode | EmptyTagNode | TextNode | ComponentNode | CommentNode;
 }
