@@ -5,22 +5,19 @@
     <!--meta-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AV Playground</title>
-    <script src="/layos" type="module"></script>
   </head>
   <body>
+    <p lay="test:ac flex av:[a.class:c2.s0]">test</p>
     <!--root-->
-    <input value="122" id="test" />
-    <input lay="av:[a.value:c2.s0]" />
-    <input lay="av:[a.aria-label:c2.s1]" />
-    <button lay="av:[e.click:c2.a0 c2.a0:c2.s0 c2.a0:c2.s1]">Save</button>
+    <script type="module">
+      import { TokenParser } from "http://localhost:3000/parser.js";
 
-    <script>
-      const input = document.querySelector("#test");
+      const element = document.querySelector("[lay]");
+      const source = element.attributes[0].value;
 
-      console.dir(input.value);
-
-      input.addEventListener("input", () => {
-        console.dir(input.value);
+      const output = TokenParser(source);
+      output.forEach((v) => {
+        console.log(v);
       });
     </script>
   </body>

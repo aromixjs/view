@@ -5,7 +5,8 @@ import { ComponentIR } from "./IR/componentIR";
 import { ParseIR } from "./IR/parseIR";
 import { readFileSync } from "fs";
 import { join } from "path";
-
+import * as esbuild from 'esbuild'
+import { cors } from "hono/cors";
 export interface ViewConfig {
   route: Array<{
     path: string;
@@ -17,6 +18,7 @@ export interface ViewConfig {
 
 export async function view(config: ViewConfig) {
   const app = new Hono();
+  app.use('*', cors())
   const registry = new Map<string, ComponentIR.Factory>();
   const baseHtml = await readFile(config.base, { encoding: "utf-8" });
 
@@ -36,15 +38,21 @@ export async function view(config: ViewConfig) {
   }
 
 
-
-  app.get('/layos', (c) => {
-
-    const lay = readFileSync(join(import.meta.dirname, 'layos.js')).toString()
-    c.header('Content-Type', 'application/javascript')
-    c.header('Cache-Control', 'public, max-age=3600')
-    return c.text(lay)
+  app.get('/parser.js', async (c) => {
+    const result = await esbuild.build({
+      entryPoints: [join(import.meta.dirname, 'layos', 'parser.ts')],
+      bundle: true,
+      write: false,
+      format: 'esm',
+      target: 'es2020',
+      minify: true,
+    })
+    const bundledJs = result.outputFiles[0].text
+    return c.body(bundledJs, 200, {
+      'Content-Type': 'application/javascript',
+      'Cache-Control': 'public, max-age=3600',
+    })
   })
-
 
   serve(
     {
