@@ -1,6 +1,6 @@
 ### Lexical State Dependencies
 
-User Writes:
+Dsl:
 
 ```html
 <script server>
@@ -16,7 +16,8 @@ User Writes:
 <button onclick="{update}">Save</button>
 ```
 
-Component IR Generated:
+IR:
+
 
 ```js
 function Home() {
@@ -80,8 +81,7 @@ function Home() {
   };
 }
 ```
-
-Browser Gets:
+Output:
 
 ```html
 <input liz="a:[value:c2s0]" value="" />

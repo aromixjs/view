@@ -1,6 +1,6 @@
 ### Control Flow
 
-User Writes:
+Dsl:
 
 ```html
 <script server>
@@ -21,7 +21,7 @@ User Writes:
 </div>
 ```
 
-Component IR Generated:
+IR:
 
 ```js
 function Home() {
@@ -126,11 +126,17 @@ function Home() {
     a1: login,
     b0,
     template,
+    get s0() {
+      return isLoggedIn;
+    },
+    set s0(v) {
+      isLoggedIn = v;
+    },
   };
 }
 ```
 
-Browser Gets:
+Output:
 
 ```html
 <div liz="b:c1b0">

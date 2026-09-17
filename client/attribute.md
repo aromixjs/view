@@ -1,6 +1,6 @@
 ### Dynamic Attributes
 
-User Writes:
+Dsl:
 
 ```html
 <script server>
@@ -12,7 +12,7 @@ User Writes:
 <div id="{elementId}" title="Hello {title}" hidden="{isHidden}">Profile</div>
 ```
 
-Component IR Generated:
+IR:
 
 ```js
 function Home() {
@@ -57,7 +57,7 @@ function Home() {
 }
 ```
 
-Browser Gets:
+Output:
 
 ```html
 <div liz="a:[id:c2s1 title:c2s2 hidden:c2s3]" id="profile" title="Hello John">

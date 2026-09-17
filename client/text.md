@@ -1,6 +1,6 @@
 ### Dynamic Text
 
-User Writes:
+Dsl:
 
 ```html
 <script server>
@@ -11,8 +11,7 @@ User Writes:
 <span>{message}</span>
 <div>user data: {user.name} - {user.email}</div>
 ```
-
-Component IR Generated:
+IR:
 
 ```js
 async function Home() {
@@ -70,7 +69,7 @@ async function Home() {
 }
 ```
 
-Browser Gets:
+Output:
 
 ```html
 <span liz="t:c2s0">Data</span>

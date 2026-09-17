@@ -1,6 +1,6 @@
 ### No Arguments
 
-User Writes:
+Dsl:
 
 ```html
 <script server>
@@ -11,7 +11,8 @@ User Writes:
 <button onClick="{save}">Save</button>
 ```
 
-Component IR Generated:
+IR:
+
 
 ```js
 function Home() {
@@ -54,7 +55,7 @@ function Home() {
 }
 ```
 
-Browser Gets:
+Output:
 
 ```html
 <button liz="e:[on:click rpc:c2a0]">Save</button>

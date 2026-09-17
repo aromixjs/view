@@ -1,6 +1,6 @@
 ### Multiple Explicit Parameters
 
-User Writes:
+Dsl:
 
 ```html
 <script server>
@@ -12,7 +12,8 @@ User Writes:
 <button onClick="{select('12345', 'edit', 'profile')}">Edit</button>
 ```
 
-Component IR Generated:
+IR:
+
 
 ```js
 function Home() {
@@ -55,7 +56,7 @@ function Home() {
 }
 ```
 
-Browser Gets:
+Output:
 
 ```html
 <button liz="e:[on:click rpc:c2a0 p:12345 p:edit p:profile]">
