@@ -30,7 +30,7 @@ function Home() {
       attributes: [
         {
           key: "sliz",
-          value: "e:[on:click rpc:c2a0 p:12345 p:edit p:profile]",
+          value: "e:[on:click rpc:c2a0 p0:12345 p1:edit p2:profile]",
         },
       ],
       events: [
@@ -59,7 +59,7 @@ function Home() {
 Output:
 
 ```html
-<button liz="e:[on:click rpc:c2a0 p:12345 p:edit p:profile]">
+<button liz="e:[on:click rpc:c2a0 p0:12345 p1:edit p2:profile]">
   Edit
 </button>
 ```

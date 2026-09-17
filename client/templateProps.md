@@ -21,11 +21,11 @@ Dsl:
      count:number
   }>();
 </script>
-<button onClick="{onAdd}" label="{count}" />
+<Btn onClick="{onAdd}" label="{count}" />
 ```
 
 ```html
-<!-- Button.av -->
+<!-- Btn.av -->
 <script server>
   let {onClick, label} = props<{
        onClick:Function,

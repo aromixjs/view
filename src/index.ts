@@ -1,5 +1,6 @@
 import { join } from "path";
 import { view } from "../lib/view";
+import { Hono } from "hono";
 
 // view({
 //   route: [
@@ -33,7 +34,20 @@ import { view } from "../lib/view";
 // test().a0('test')
 
 
+const app = new Hono()
 
-let s = ['a', 'a', 's', '0']
 
-console.log(`data: ${s.join('s: ')}`);
+app.get('/',(c)=>{
+
+    return c.body(`
+    {
+    user: string("data")
+    
+    }
+    
+    
+    `, 200, {
+      'Content-Type': 'application/ted',
+    })
+
+})
