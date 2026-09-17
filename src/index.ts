@@ -1,6 +1,7 @@
 import { join } from "path";
 import { view } from "../lib/view";
 import { Hono } from "hono";
+import { serve } from "@hono/node-server";
 
 // view({
 //   route: [
@@ -37,9 +38,9 @@ import { Hono } from "hono";
 const app = new Hono()
 
 
-app.get('/',(c)=>{
+app.get('/', (c) => {
 
-    return c.body(`
+   return c.body(`
     {
     user: string("data")
     
@@ -48,6 +49,16 @@ app.get('/',(c)=>{
     
     `, 200, {
       'Content-Type': 'application/ted',
-    })
+   })
 
 })
+
+
+serve({
+   fetch: app.fetch,
+   port: 3000
+}, (c) => {
+   console.log(c);
+
+})
+

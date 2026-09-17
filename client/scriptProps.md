@@ -110,8 +110,8 @@ function Header({
       attributes: [
         {
           key: "liz",
-          // Transitive State Deps
-          value: `e:[on:click rpc:c3a0 ${propsMeta.onClick.s.map((s) => `s:${s}`).join(" ")} ]`,
+          // Transitive State Deps (d for deps)
+          value: `e:[on:click rpc:c3a0 d:c2a0:[${propsMeta.onClick.s.map((s) => `s:${s}`).join(" ")}] ]`,
         },
       ],
       child: [
@@ -135,7 +135,7 @@ function Header({
 Browser Gets:
 
 ```html
-<button sliz="e:[on:click rpc:c3a0 s:c2s0]">Add</button>
+<button sliz="e:[on:click rpc:c3a0 d:c2a0:[s:c2s0]]">Add</button>
 ```
 
 ---
@@ -202,7 +202,7 @@ function App() {
 
 IR (Display):
 
-** This Is A huge issue its not good needs to change this **
+** This Is A huge issue its not good needs to change this  **
 
 ```js
 function Display({props,propsMeta}:{
@@ -248,7 +248,7 @@ propsMeta:{
 }
 ```
 
-Browser Gets:
+Browser Gets(old):
 
 ```html
 <!-- Client knows: if c3.s0 is involved in an RPC, pack c2.s0 too -->
