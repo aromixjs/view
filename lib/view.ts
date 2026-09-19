@@ -3,7 +3,6 @@ import { readFile } from "fs/promises";
 import { Hono } from "hono";
 import { ComponentIR } from "./IR/componentIR";
 import { ParseIR } from "./IR/parseIR";
-import { readFileSync } from "fs";
 import { join } from "path";
 import * as esbuild from 'esbuild'
 import { cors } from "hono/cors";
